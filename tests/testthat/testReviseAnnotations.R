@@ -1,8 +1,40 @@
-
 #New Annotations file
-#exons = readRDS("../data/exons.rds")
+exons = readRDS("../data/exons.rds")
 cdss = readRDS("../data/cdss.rds")
 new_annotations = readRDS("../data/treatment_res_annot.rds")
+
+context("Expand two transcripts into a set with only unit changes")
+
+test_that("Revsing RASSF1 generates no new transcripts", {
+  rassf1 = constructAlternativeTranscripts("ENST00000327761", "ENST00000359365",exons)
+  expect_equal(length(rassf1),2) #Two transcripts
+  expect_true(all(names(rassf1) %in% c("ENST00000327761", "ENST00000359365"))) #Names unchanges
+})
+
+test_that("Alternative promoter vs exon (OSBPL9)",{
+  txs = c("ENST00000428468","ENST00000361556")
+  new_tx = constructAlternativeTranscripts(txs[1], txs[2],exons)
+  expect_equal(length(new_tx),4) #New annotations have four transcripts
+  
+  #Five exon different between the initial two transcripts
+  expect_equal(sum(width(setdiff(new_tx$ENST00000428468, new_tx$ENST00000361556))),359)
+  expect_equal(length(width(setdiff(new_tx$ENST00000428468, new_tx$ENST00000361556))),5)
+  
+  #Alternative exon removed in the new transcript
+  expect_equal(width(setdiff(new_tx$ENST00000428468, new_tx$ENST00000428468.3)),39)
+  
+  #Four exons removed from the first alternative transcript
+  expect_equal(length(setdiff(new_tx$ENST00000428468, new_tx$ENST00000428468.2)),4)
+  expect_equal(sum(width(setdiff(new_tx$ENST00000428468, new_tx$ENST00000428468.2))),320)
+})
+
+test_that("RMI2 has two non-overlapping transcripts. Should issue a warning.",{
+  rmi2_txs = c("ENST00000572992","ENST00000312499")
+  new_tx = constructAlternativeTranscripts(rmi2_txs[1], rmi2_txs[2],exons)
+  warn = tryCatch(constructAlternativeTranscripts(rmi2_txs[1], rmi2_txs[2],exons), warning = function(w) w)
+  expect_equal(warn$message,"No shared exons between two transcripts.")
+  expect_equal(length(new_tx),2)
+})
 
 context("Classify differences between two transcripts")
 
@@ -56,8 +88,6 @@ test_that("NCOA7 - changes both upstreatm and downstream",{
   expect_equivalent(ncoa7$difference, c(2648,9,0))
   expect_equivalent(ncoa7$coding, c(1,0,0))
 })
-
-context("Expand two transcripts into a set with only unit changes")
 
 
 
