@@ -265,6 +265,7 @@ applyClassifyDifference <- function(txs_list, new_annotations, cdss){
   coding = c()
   used_names = c()
   for (name in names){
+    print(name)
     txs = txs_list[[name]]
     classification = tryCatch(classifyDifference(txs[1], txs[2], new_annotations, cdss), warning = function(w) w)
     if (class(classification)[1] != "simpleWarning"){ #Avoid txs with warnings (no shared exons)
@@ -300,13 +301,6 @@ indentifyAddedRemovedRegions <- function(exon_set1, exon_set2){
   removedFromFirst = compareGRanges(removedFromFirst, shared_region)
   
   return(list(addedInSecond = addedInSecond, removedFromFirst = removedFromFirst))
-}
-
-extractGeneTxMap <- function(annotations){
-  new_tx_map = values(annotations[annotations$type == "mRNA",])
-  new_tx_map = new_tx_map[,c("Parent","ID")]
-  colnames(new_tx_map) = c("gene_id", "transcript_id")
-  return(new_tx_map)
 }
 
 calulateChangesLength <- function(granges){
