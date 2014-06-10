@@ -250,11 +250,11 @@ classifyDifference <- function(tx1_id, tx2_id, annotations, cdss){
     return(NULL)
   }
   else{
-    changes = c(changes$addedInSecond, changes$removedFromFirst)
     difference = calulateChangesLength(changes)
+    abs_diff = calulateChangesLength(changes, abs_diff = TRUE)
     coding = decideCoding(c(tx1_id,tx2_id), cdss, changes)
   }
-  return(list(difference  = difference, coding = coding))
+  return(list(difference = difference, coding = coding, abs_diff = abs_diff))
 }
 
 applyClassifyDifference <- function(txs_list, new_annotations, cdss){
@@ -262,6 +262,7 @@ applyClassifyDifference <- function(txs_list, new_annotations, cdss){
   names = names(txs_list)
   
   difference = c()
+  abs_diff = c()
   coding = c()
   used_names = c()
   for (name in names){
@@ -271,15 +272,19 @@ applyClassifyDifference <- function(txs_list, new_annotations, cdss){
     if (class(classification)[1] != "simpleWarning"){ #Avoid txs with warnings (no shared exons)
       difference = rbind(difference, classification$difference)
       coding = rbind(coding, classification$coding)
+      abs_diff = rbind(abs_diff, classification$abs_diff)
       used_names = c(used_names, name)
     }
   }
   difference = data.frame(difference)
   coding = data.frame(coding)
+  abs_diff = data.frame(abs_diff)
+  print(abs_diff)
   rownames(difference) = used_names
   rownames(coding) = used_names
+  rownames(abs_diff) = used_names
   
-  return(list(difference = difference, coding = coding))
+  return(list(difference = difference, coding = coding, abs_diff = abs_diff))
 }
 
 indentifyAddedRemovedRegions <- function(exon_set1, exon_set2){
@@ -295,20 +300,34 @@ indentifyAddedRemovedRegions <- function(exon_set1, exon_set2){
   
   #Idetinfy added or removed regions
   shared_region = union(gaps(shared_exons, start = min(start(shared_exons))), shared_exons)  
-  addedInSecond = setdiff(exon_set1, shared_exons)
+  addedInSecond = setdiff(exon_set2, shared_exons)
   addedInSecond = compareGRanges(addedInSecond, shared_region)
-  removedFromFirst = setdiff(exon_set2, shared_exons)
+  removedFromFirst = setdiff(exon_set1, shared_exons)
   removedFromFirst = compareGRanges(removedFromFirst, shared_region)
   
   return(list(addedInSecond = addedInSecond, removedFromFirst = removedFromFirst))
 }
 
-calulateChangesLength <- function(granges){
+calulateChangesLength <- function(changes, abs_diff = FALSE){ 
   vector = c(0,0,0)
   names(vector) = c("upstream", "downstream", "contained")
-  vector["upstream"] = as.numeric(sum(width(granges[granges$upstream == 1,])))
-  vector["downstream"] = as.numeric(sum(width(granges[granges$downstream == 1,])))
-  vector["contained"] = as.numeric(sum(width(granges[granges$contained == 1,])))
+  addedInSecond = changes$addedInSecond
+  removedFromFirst = changes$removedFromFirst
+  
+  if(!abs_diff){
+    granges = c(addedInSecond, removedFromFirst)
+    vector["upstream"] = as.numeric(sum(width(granges[granges$upstream == 1,])))
+    vector["downstream"] = as.numeric(sum(width(granges[granges$downstream == 1,])))
+    vector["contained"] = as.numeric(sum(width(granges[granges$contained == 1,])))
+  }
+  else{
+    vector["upstream"] = as.numeric(sum(width(addedInSecond[addedInSecond$upstream == 1,]))) - 
+      as.numeric(sum(width(removedFromFirst[removedFromFirst$upstream == 1,])))
+    vector["downstream"] = as.numeric(sum(width(addedInSecond[addedInSecond$downstream == 1,]))) -
+      as.numeric(sum(width(removedFromFirst[removedFromFirst$downstream == 1,])))
+    vector["contained"] = as.numeric(sum(width(addedInSecond[addedInSecond$contained == 1,]))) -
+      as.numeric(sum(width(removedFromFirst[removedFromFirst$contained == 1,])))
+  }
   return(vector)
 }
 
@@ -336,6 +355,10 @@ filterClassification <- function(classification_list, ratio_cutoff = 0.05){
 }
 
 decideCoding <- function(tx_ids, cdss, changes){
+  
+  #Put all changes together
+  changes = c(changes$addedInSecond, changes$removedFromFirst)
+  
   #Identify the original trancripts
   tx_ids = sapply(strsplit(tx_ids, ".", fixed = TRUE), function(x) x[1])
   
