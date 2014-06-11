@@ -20,6 +20,5 @@ classifySplicingTable <- function(splicing_table, annotations, cdss){
   split_txs = strsplit(splicing_table$transcript_ids,",")
   names(split_txs) = splicing_table$gene_id
   classification = applyClassifyDifference(split_txs, annotations, cdss)
-  classification = filterClassification(classification)
   return(classification)
 }
