@@ -40,40 +40,48 @@ context("Classify differences between two transcripts")
 
 test_that("RASSF1 has only upstream coding changes", {
 	rassf1 = classifyDifference("ENST00000327761", "ENST00000359365", new_annotations, cdss)
-	expect_that(rassf1$difference, is_equivalent_to( c(756,0,0) )) #756 bp upstream change 
-	expect_that(rassf1$coding, is_equivalent_to( c(1,0,0) )) #is coding
+	expect_that(rassf1$transcribe$diff, is_equivalent_to( c(756,0,0) )) #756 bp upstream change 
+	expect_that(rassf1$coding$diff, is_equivalent_to( c(504,0,0) )) #is coding
 	})
 
-test_that("ZC3HAV1 has downstream coding changes", {
-  zc3hav1 = classifyDifference("ENST00000242351.2","ENST00000471652", new_annotations, cdss)
-  expect_equivalent(zc3hav1$difference, c(0,5385,0)) #Upstream change 
-  expect_equivalent(zc3hav1$coding, c(0,1,0)) #is coding
+test_that("ZC3HAV1 has upstream and downstream changes", {
+  zc3hav1 = classifyDifference("ENST00000242351","ENST00000471652", new_annotations, cdss)
+  expect_equivalent(zc3hav1$transcribed$diff, c(71,5385,0)) #Upstream change 
+  expect_equivalent(zc3hav1$coding$diff, c(0,617,0)) #is coding
+})
+
+test_that("ZC3HAV1 modified transcript has only downsteam changes", {
+  zc3hav1 = classifyDifference("ENST00000242351.2","ENST00000471652", new_annotations)
+  expect_equivalent(zc3hav1$transcribed$diff, c(0,5385,0)) #Upstream change 
 })
 
 test_that("RASSF5 has upstream and downstream changes, but only upstream is coding",{
   rassf5 = classifyDifference("ENST00000355294","ENST00000304534", new_annotations, cdss)
-  expect_equivalent(rassf5$difference, c(1165,1555,0))
-  expect_equivalent(rassf5$coding, c(1,0,0)) 
+  expect_equivalent(rassf5$transcribed$diff, c(1165,1555,0))
+  expect_equivalent(rassf5$coding$diff, c(699,0,0)) 
 })
 
+test_that("OSBPL9 has upstream and coding changes", {
+  osbpl9 = classifyDifference("ENST00000428468","ENST00000361556", new_annotations, cdss)
+  expect_equivalent(osbpl9$transcribed$diff, c(507,0,39))
+  expect_equivalent(osbpl9$coding$diff, c(345,0,39)) 
+})
 
 test_that("OSBPL9 has upstream and coding changes", {
-  osbpl9 = classifyDifference("ENST00000428468","ENST00000428468.2", new_annotations, cdss)
-  expect_equivalent(osbpl9$difference, c(507,0,0))
-  expect_equivalent(osbpl9$coding, c(1,0,0)) 
+  osbpl9 = classifyDifference("ENST00000428468","ENST00000428468.2", new_annotations)
+  expect_equivalent(osbpl9$transcribed$diff, c(507,0,0))
 })
 
 
 test_that("PNPT1 downstream and contained, but not coding",{
-  pnpt1 = classifyDifference("ENST00000447944.2","ENST00000415374", new_annotations, cdss)
-  expect_equivalent(pnpt1$difference, c(0,304,712))
-  expect_equivalent(pnpt1$coding, c(0,0,0)) 
+  pnpt1 = classifyDifference("ENST00000447944.2","ENST00000415374", new_annotations)
+  expect_equivalent(pnpt1$transcribed$diff, c(0,304,712))
 })
 
 test_that("SUN2 has all coding changes", {
   sun2 = classifyDifference("ENST00000216064","ENST00000469086", new_annotations, cdss)
-  expect_equivalent(sun2$difference, c(1104,2029,574))
-  expect_equivalent(sun2$coding, c(1,1,1))
+  expect_equivalent(sun2$transcribed$diff, c(1104,2029,574))
+  expect_equivalent(sun2$coding$diff, c(887,492,574))
 })
 
 test_that("RMI2 has no overlapping transcripts so the comparison does not make semse",{
@@ -85,10 +93,27 @@ test_that("RMI2 has no overlapping transcripts so the comparison does not make s
 
 test_that("NCOA7 - changes both upstreatm and downstream",{
   ncoa7 = classifyDifference("ENST00000438495","ENST00000392477", new_annotations, cdss)
-  expect_equivalent(ncoa7$difference, c(2648,9,0))
-  expect_equivalent(ncoa7$coding, c(1,0,0))
+  expect_equivalent(ncoa7$transcribed$diff, c(2648,9,0))
+  expect_equivalent(ncoa7$coding$diff, c(2371,0,0))
 })
 
+context("Apply classifyDifference to more than two txs")
+
+test_that("NCOA7 - changes both upstreatm and downstream",{
+  #Run with old annotations
+  tx_list = list(NCOA7 = c("ENST00000438495","ENST00000392477"), OSBPL9 = c("ENST00000428468","ENST00000361556"))
+  class1 = applyClassifyDifference(tx_list, new_annotations, cdss)
+  
+  #Run with new annotations
+  tx_list_new = list(NCOA7 = c("ENST00000438495","ENST00000438495.2"), OSBPL9 = c("ENST00000428468","ENST00000428468.2"))
+  class2 = applyClassifyDifference(tx_list_new, new_annotations)
+  
+  coding_sum1 = colSums(class1$coding$diff * sign(class1$transcribed$diff)) 
+  coding_sum2 = colSums(class1$coding$diff * sign(class2$transcribed$diff)) 
+  
+  expect_equivalent(coding_sum1, c(2716,0,39))
+  expect_equivalent(coding_sum2, c(2716,0,0))
+})
 
 
 

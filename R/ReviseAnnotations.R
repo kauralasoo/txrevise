@@ -107,15 +107,14 @@ constructAlternativeTranscripts <- function(canonical_name, tx_names, exons){
     tx_list[[tx_name]] = tx
     
     #Identify all changes between two txs
-    changes = indentifyAddedRemovedRegions(tx, canonical_tx)
-    #print(changes)
+    changes = indentifyAddedRemovedRegions(tx_name, canonical_name, exons)
     
     #Only proceed if there are any changes
     if(!is.null(changes)){ 
       #Construct alternative txs where only 5', 3' or middle exons have changed
       events = c("upstream", "downstream", "contained")
       for (event in events){
-        new_tx = modifyTranscript(canonical_tx, changes$removedFromFirst, changes$addedInSecond, event)
+        new_tx = modifyTranscript(canonical_tx, changes[[canonical_name]], changes[[tx_name]], event)
         #Add new tx to the list if it's already not there
         if (!txIsInList(new_tx, tx_list)){
           new_tx_name = paste(canonical_name, ".", length(tx_list), sep = "")
@@ -236,60 +235,85 @@ makeNewTranscripts <- function(transcript_sets, exons, gene_annot){
   return(result)
 }
 
-classifyDifference <- function(tx1_id, tx2_id, annotations, cdss){
+classifyDifference <- function(tx1_id, tx2_id, annotations, cdss = NULL){
   #Compare two trancripts and decide where they differ.
   
-  #Extract exons of the transcripts
-  exons_tx1 = annotations[annotations$Parent == tx1_id,]
-  exons_tx2 = annotations[annotations$Parent == tx2_id,]
-  
-  changes = indentifyAddedRemovedRegions(exons_tx1, exons_tx2)
+  #Create exons list to idenitify added and removed regions
+  exons_list = list()
+  exons_list[[tx1_id]] = annotations[annotations$Parent == tx1_id,]
+  exons_list[[tx2_id]] = annotations[annotations$Parent == tx2_id,]
+  changes = indentifyAddedRemovedRegions(tx1_id, tx2_id, exons_list)
   if(is.null(changes)){ #No shared regions between transcripts
-    difference = c(1,1,1)
-    names(difference) = c("upstream", "downstream", "contained")
     return(NULL)
   }
   else{
-    difference = calulateChangesLength(changes)
+    result = list(transcribed = NULL, coding = NULL)
+    diff = calulateChangesLength(changes)
     abs_diff = calulateChangesLength(changes, abs_diff = TRUE)
-    coding = decideCoding(c(tx1_id,tx2_id), cdss, changes)
+    result$transcribed = list(diff = diff, abs_diff = abs_diff)
+    
+    #Calculate coding changes as well
+    if(!is.null(cdss)){
+      coding_changes = intersectCoding(tx1_id, tx2_id, changes, cdss)
+      if(!is.null(coding_changes)){ #Proceed only if CDS information available for both transcripts
+        coding_diff = calulateChangesLength(coding_changes)
+        coding_abs_diff = calulateChangesLength(coding_changes, abs_diff = TRUE)
+        result$coding = list(diff = coding_diff, abs_diff = coding_abs_diff)
+      }
+    }
+    return(result)
   }
-  return(list(difference = difference, coding = coding, abs_diff = abs_diff))
 }
 
-applyClassifyDifference <- function(txs_list, new_annotations, cdss){
+applyClassifyDifference <- function(txs_list, new_annotations, cdss = NULL, printProgress = FALSE){
   #Classify all transcripts in a list
   names = names(txs_list)
   
-  difference = c()
-  abs_diff = c()
-  coding = c()
+  #Prepare results list
+  result = list(transcribed = list(diff = c(), abs_diff = c()))
+  if(!is.null(cdss)){ result[["coding"]] = list(diff = c(), abs_diff = c()) }
   used_names = c()
+  
   for (name in names){
-    print(name)
+    if(printProgress){ print(name) }
     txs = txs_list[[name]]
     classification = tryCatch(classifyDifference(txs[1], txs[2], new_annotations, cdss), warning = function(w) w)
     if (class(classification)[1] != "simpleWarning"){ #Avoid txs with warnings (no shared exons)
-      difference = rbind(difference, classification$difference)
-      coding = rbind(coding, classification$coding)
-      abs_diff = rbind(abs_diff, classification$abs_diff)
       used_names = c(used_names, name)
+      #Bind trancribed changes
+      result$transcribed$diff = rbind(result$transcribed$diff, classification$transcribed$diff)
+      result$transcribed$abs_diff = rbind(result$transcribed$abs_diff, classification$transcribed$abs_diff)     
+      #Bind coding changes if cdss is present
+      if(!is.null(cdss)){
+        result$coding$diff = rbind(result$coding$diff, classification$coding$diff)
+        result$coding$abs_diff = rbind(result$coding$abs_diff, classification$coding$abs_diff)        
+      }
     }
   }
-  difference = data.frame(difference)
-  coding = data.frame(coding)
-  abs_diff = data.frame(abs_diff)
-  print(abs_diff)
-  rownames(difference) = used_names
-  rownames(coding) = used_names
-  rownames(abs_diff) = used_names
+  #Convert to data.frame and add rownames
+  result$transcribed$diff = as.data.frame(result$transcribed$diff)
+  result$transcribed$abs_diff = as.data.frame(result$transcribed$abs_diff)
+  rownames(result$transcribed$diff) = used_names
+  rownames(result$transcribed$abs_diff) = used_names
   
-  return(list(difference = difference, coding = coding, abs_diff = abs_diff))
+  #Do the same for coding changes
+  if(!is.null(cdss)){ 
+    result$coding$diff = as.data.frame(result$coding$diff)
+    result$coding$abs_diff = as.data.frame(result$coding$abs_diff)
+    rownames(result$coding$diff) = used_names
+    rownames(result$coding$abs_diff) = used_names 
+  }
+  
+  return(result)
 }
 
-indentifyAddedRemovedRegions <- function(exon_set1, exon_set2){
+indentifyAddedRemovedRegions <- function(tx1_id, tx2_id, exons_list){
   #Identify regions that have been added or removed betweeb two transcripts. 
   #Return NULL if there is no shared region between two transcripts.
+  
+  #Extract exons of the transcripts
+  exon_set1 = exons_list[[tx1_id]]
+  exon_set2 = exons_list[[tx2_id]]
   
   #Indentify shared exons
   shared_exons = intersect(exon_set1, exon_set2)
@@ -305,14 +329,18 @@ indentifyAddedRemovedRegions <- function(exon_set1, exon_set2){
   removedFromFirst = setdiff(exon_set1, shared_exons)
   removedFromFirst = compareGRanges(removedFromFirst, shared_region)
   
-  return(list(addedInSecond = addedInSecond, removedFromFirst = removedFromFirst))
+  #Build list with tx ids as names
+  result = list()
+  result[[tx1_id]] = removedFromFirst
+  result[[tx2_id]] = addedInSecond
+  return(result)
 }
 
 calulateChangesLength <- function(changes, abs_diff = FALSE){ 
   vector = c(0,0,0)
   names(vector) = c("upstream", "downstream", "contained")
-  addedInSecond = changes$addedInSecond
-  removedFromFirst = changes$removedFromFirst
+  addedInSecond = changes[[2]]
+  removedFromFirst = changes[[1]]
   
   if(!abs_diff){
     granges = c(addedInSecond, removedFromFirst)
@@ -331,23 +359,34 @@ calulateChangesLength <- function(changes, abs_diff = FALSE){
   return(vector)
 }
 
-decideCoding <- function(tx_ids, cdss, changes){
-  
-  #Put all changes together
-  changes = c(changes$addedInSecond, changes$removedFromFirst)
-  
-  #Identify the original trancripts
-  tx_ids = sapply(strsplit(tx_ids, ".", fixed = TRUE), function(x) x[1])
-  
+intersectCoding <- function(tx1_id, tx2_id, changes, cdss){
+  #Intersect changes with known CDS to find the changes that affect coding sequence
+    
   #Contruct CDS regions
-  cds1 = cdss[[tx_ids[1] ]]
-  cds1 = union(gaps(cds1, start = min(start(cds1))), cds1) 
-  cds2 = cdss[[tx_ids[2] ]]
-  cds2 = union(gaps(cds2, start = min(start(cds2))), cds2) 
-  cds_regions = c(cds1, cds2)
+  intersection = intersect(c(tx1_id, tx2_id),names(cdss))
+  if(length(intersection) < 2){
+    warning("Some transcripts not found in the cdss database")
+    return(NULL)
+  }
 
-  #Check if the changes overlap with the cds regions
-  cds_changes = changes[unique(queryHits(findOverlaps(changes,cds_regions)))]
-  result = sign(colSums(as.data.frame(values(cds_changes))))
-  return(result)
+  cds1 = cdss[[tx1_id]]
+  cds1 = union(gaps(cds1, start = min(start(cds1))), cds1) 
+  cds2 = cdss[[tx2_id]]
+  cds2 = union(gaps(cds2, start = min(start(cds2))), cds2) 
+
+  #Find changes affecting the coding sequence
+  coding_changes = list()
+  tx1_coding = intersect(changes[[tx1_id]], cds1)
+  tx2_coding = intersect(changes[[tx2_id]], cds2)
+  
+  #Put back metadata for overlapping exons
+  tx1_metadata = mcols(changes[[tx1_id]][subjectHits(findOverlaps(tx1_coding, changes[[tx1_id]])),])
+  tx2_metadata = mcols(changes[[tx2_id]][subjectHits(findOverlaps(tx2_coding, changes[[tx2_id]])),])
+  mcols(tx1_coding) = tx1_metadata
+  mcols(tx2_coding) = tx2_metadata
+  
+  #Return
+  coding_changes[[tx1_id]] = tx1_coding
+  coding_changes[[tx2_id]] = tx2_coding
+  return(coding_changes)
 }
