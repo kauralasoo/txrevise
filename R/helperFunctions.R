@@ -15,20 +15,19 @@ extractGeneTxMap <- function(annotations){
   return(new_tx_map)
 }
 
-classifySplicingTable <- function(splicing_table, annotations, cdss){
+classifySplicingTable <- function(splicing_table, annotations, cdss = NULL){
   #Decided what kind of splicing events are happening based on a splcing table
   split_txs = strsplit(splicing_table$transcript_ids,",")
   names(split_txs) = splicing_table$gene_id
-  classification = applyClassifyDifference(split_txs, annotations, cdss)
+  classification = applyClassifyDifference(split_txs, annotations, cdss, printProgress = TRUE)
   return(classification)
 }
 
 filterClassification <- function(classification_list, ratio_cutoff = 0.05){
   #Filter out small upstream and dowstram changes, because they cannot be estimated reliably from RNA-Seq
-  classification = classification_list$difference
-  coding = classification_list$coding
-  abs_diff = classification_list$coding
-  classification$multiple = 0
+  classification = classification_list$transcribed$diff
+  abs_diff = classification_list$transcribed$abs_diff
+  multiple = rep(0, nrow(classification))
   
   ambig_filter = rowSums(sign(classification)) > 1
   upstream_ratio = classification$upstream/apply(classification, 1, max) < ratio_cutoff
@@ -40,13 +39,10 @@ filterClassification <- function(classification_list, ratio_cutoff = 0.05){
   
   #Mark ambiguous genes
   ambig_filter2 = rowSums(sign(classification)) > 1
-  classification$multiple[ambig_filter2] = 1
+  multiple[ambig_filter2] = 1
   
-  coding[sign(classification[,1:3]) == 0] = 0
   abs_diff[sign(classification[,1:3]) == 0] = 0
-  coding$combined = sign(rowSums(coding))
-  abs_diff$combined = sign(rowSums(abs(abs_diff)))
-  return(list(difference = classification, coding = coding, abs_diff = abs_diff))
+  return(list(transcribed = list(diff = classification, abs_diff = abs_diff), multiple = multiple))
 }
 
 prepareDataForPlotting <- function(filtered_classification_list, remove_multiple = FALSE){
@@ -90,5 +86,18 @@ prepareDataForPlotting <- function(filtered_classification_list, remove_multiple
 makeClassificationFigure <- function(classification_list){
   type = colSums(sign(a$difference[a$difference$multiple == 0,]))
   colSums(sign(a$difference[a$difference$multiple == 1,]))
+}
+
+copyCodingChanges <- function(modified_tx_classification, initial_tx_classification){
+  #Copy coding changes from initial classification of transcripts
+  coding = initial_tx_classification$coding
+  
+  #Keep common genes
+  gene_ids = rownames(modified_tx_classification$transcribed$diff)
+  coding$diff = coding$diff[gene_ids,] * sign(modified_tx_classification$transcribed$diff)
+  coding$abs_diff = coding$abs_diff[gene_ids,] * sign(modified_tx_classification$transcribed$diff)
+  
+  modified_tx_classification[["coding"]] = coding
+  return(modified_tx_classification)
 }
 
