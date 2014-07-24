@@ -15,6 +15,36 @@ extractGeneTxMap <- function(annotations){
   return(new_tx_map)
 }
 
+extractFeature <- function(vector){
+  #Return the one and only unqiue value in a vector, factor, RLE, etc. Complain if there is more than one unique value.
+  value = unique(as.vector(vector))
+  if(length(value) == 1){
+    return(value)
+  } else{
+    warning("More than one unqiue value in the vector.")
+    return(NULL)
+  }
+}
+
+txIsInList <- function(tx, tx_list){
+  #Test if a transcript is already in a GRangesList object
+  result = FALSE
+  itr = 1
+  if(length(tx_list) == 0){
+    warning("tx_list object is empty")
+    return(FALSE)
+  }
+  for (itr in 1:length(tx_list)){
+    current_tx = tx_list[[itr]]
+    if (length(tx) == length(current_tx)){
+      if(all(tx == current_tx)){
+        result = TRUE
+      }
+    }
+  }
+  return(result)
+}
+
 classifySplicingTable <- function(splicing_table, annotations, cdss = NULL){
   #Decided what kind of splicing events are happening based on a splcing table
   split_txs = strsplit(splicing_table$transcript_ids,",")
