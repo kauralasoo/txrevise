@@ -122,8 +122,10 @@ makeNewTranscripts <- function(transcript_sets, exons, gene_annot, make_events =
       transcript_list = constructAlternativeTranscripts(tx, other_tx, exons)
     }
     gene_id = gene_annot[tx,]$gene_id
-    transcripts = addTranscriptAnnotations(transcript_list, gene_id)
-    result = c(result, transcripts)
+    if(length(transcript_list) > 0){ #Only proceed if the there are any txs in the list
+      transcripts = addTranscriptAnnotations(transcript_list, gene_id)
+      result = c(result, transcripts)
+    }
   }
   return(result)
 }

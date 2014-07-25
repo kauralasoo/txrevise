@@ -12,19 +12,21 @@ constructAlternativeEvents <- function(canonical_name, tx_names, exons){
     #Iterate over alternative transcripts
     changes = indentifyAddedRemovedRegions(tx_name, canonical_name, exons)
     
-    #Extract changes
-    canonical_changes = changes[[canonical_name]]
-    tx_changes = changes[[tx_name]]
-    shared_exons = changes$shared_exons
-    
-    upstream_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "upstream", id_base = tx_name)
-    downstream_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "downstream", id_base = tx_name)
-    contained_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "contained", id_base = tx_name)
-    
-    #Merge into respective lists
-    upstream_list = mergeGRangesList(upstream_list, upstream_events)
-    downstream_list = mergeGRangesList(downstream_list, downstream_events)
-    contained_list = mergeGRangesList(contained_list, contained_events)
+    if(!is.null(changes)){ 
+      #Extract changes
+      canonical_changes = changes[[canonical_name]]
+      tx_changes = changes[[tx_name]]
+      shared_exons = changes$shared_exons
+      
+      upstream_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "upstream", id_base = tx_name)
+      downstream_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "downstream", id_base = tx_name)
+      contained_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "contained", id_base = tx_name)
+      
+      #Merge into respective lists
+      upstream_list = mergeGRangesList(upstream_list, upstream_events)
+      downstream_list = mergeGRangesList(downstream_list, downstream_events)
+      contained_list = mergeGRangesList(contained_list, contained_events)
+    }
   }
   #Merge all events together
   all_events = c(upstream_list, downstream_list, contained_list)
