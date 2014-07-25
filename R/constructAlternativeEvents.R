@@ -42,13 +42,17 @@ constructEventsByType <- function(canonical_changes, tx_changes, shared_exons, t
   }
   
   #Keep changes of specific type
-  canonical_changes = canonical_changes[as.numeric(values(canonical_changes)[,type]) == 1]
-  tx_changes = tx_changes[as.numeric(values(tx_changes)[,type]) == 1] 
+  if(length(canonical_changes) > 0){
+    canonical_changes = canonical_changes[as.numeric(values(canonical_changes)[,type]) == 1]
+    values(canonical_changes) = c()
+  }
+  if(length(tx_changes) > 0){
+    tx_changes = tx_changes[as.numeric(values(tx_changes)[,type]) == 1] 
+    values(tx_changes) = c()
+  }
   total_length = length(tx_changes) + length(canonical_changes)
   if(total_length > 0){
     #Remove annotation columns before concatenation
-    values(canonical_changes) = c()
-    values(tx_changes) = c()
     
     #Make two new transcripts
     tx1 = c(shared_exons, canonical_changes)
@@ -79,4 +83,25 @@ mergeGRangesList <- function(list1, list2){
     }
   }
   return(list1)
+}
+
+splitEvents <- function(events){
+  #Split new events into upstream, downstream and contained to make gff files
+  genes = events[events$type == "gene",]
+  
+  #Process events
+  upstream_events = splitEventsHelper(events, genes, "upstream")
+  downstream_events = splitEventsHelper(events, genes, "downstream")
+  contained_events = splitEventsHelper(events, genes, "contained")
+  
+  result = list(upstream = upstream_events, downstream = downstream_events, contained = contained_events)
+  return(result)
+}
+
+splitEventsHelper <- function(events, genes, modification){
+  #Helper function for splitEvent
+  upstream_events = events[events$modification == modification,]
+  upstream_genes = genes[genes$gene_id %in% unique(upstream_events$gene_id)]
+  upstream_events = c(upstream_genes, upstream_events)
+  return(upstream_events)
 }
