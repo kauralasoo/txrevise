@@ -53,37 +53,17 @@ classifySplicingTable <- function(splicing_table, annotations, cdss = NULL){
   return(classification)
 }
 
-filterClassification <- function(classification_list, ratio_cutoff = 0.05){
-  #Filter out small upstream and dowstram changes, because they cannot be estimated reliably from RNA-Seq
-  classification = classification_list$transcribed$diff
-  abs_diff = classification_list$transcribed$abs_diff
-  multiple = rep(0, nrow(classification))
-  
-  ambig_filter = rowSums(sign(classification)) > 1
-  upstream_ratio = classification$upstream/apply(classification, 1, max) < ratio_cutoff
-  downstream_ratio = classification$downstream/apply(classification,1, max) < ratio_cutoff
-  classification$upstream[ambig_filter & upstream_ratio] = 0
-  classification$downstream[ambig_filter & downstream_ratio] = 0
-  classification$upstream[classification$upstream <= 5] = 0
-  classification$downstream[classification$downstream <= 5] = 0
-  
-  #Mark ambiguous genes
-  ambig_filter2 = rowSums(sign(classification)) > 1
-  multiple[ambig_filter2] = 1
-  
-  abs_diff[sign(classification[,1:3]) == 0] = 0
-  return(list(transcribed = list(diff = classification, abs_diff = abs_diff), multiple = multiple))
-}
-
 prepareDataForPlotting <- function(filtered_classification_list, remove_multiple = FALSE){
   #Extract data
-  diff = filtered_classification_list$difference
+  diff = filtered_classification_list$transcribed$diff
   diff$gene_id = rownames(diff)
-  code = filtered_classification_list$coding
+  code = filtered_classification_list$coding$diff
   code$gene_id = rownames(code)
   
   #Filter out genes with multiple changes
   if(remove_multiple == TRUE){
+    diff$multiple = sign(rowSums(sign(filtered_classification_list$transcribed$diff)) -1)
+    code$combined = rowSums(sign(filtered_classification_list$coding$diff))
     diff = diff[diff$multiple == 0,]
     code = code[diff$multiple == 0,]
   }
@@ -95,14 +75,14 @@ prepareDataForPlotting <- function(filtered_classification_list, remove_multiple
   if(remove_multiple == TRUE){
     diff_melt = diff_melt[diff_melt$value > 0,]
     code_melt = melt(code[,c("combined", "gene_id")])
-    filter = code_melt$value == 1
+    filter = code_melt$value > 0
     code_melt[filter,]$value = "coding"
     code_melt[!filter,]$value = "non-coding" 
     diff_melt$coding = code_melt[match(diff_melt$gene_id, code_melt$gene_id),]$value
   }
   else{
     code_melt = melt(code[,c("upstream","downstream", "contained", "gene_id")])
-    filter = code_melt$value == 1
+    filter = code_melt$value > 0
     code_melt[filter,]$value = "coding"
     code_melt[!filter,]$value = "non-coding" 
     
@@ -113,21 +93,33 @@ prepareDataForPlotting <- function(filtered_classification_list, remove_multiple
   return(diff_melt)
 }
 
-makeClassificationFigure <- function(classification_list){
-  type = colSums(sign(a$difference[a$difference$multiple == 0,]))
-  colSums(sign(a$difference[a$difference$multiple == 1,]))
+constructEventMask <- function(upstream_res, contained_res, downstream_res, diff_matrix){
+  #Combine all upstream and downstream into a single mask to filter inital classification results
+  
+  #All significant hits
+  significant_hits = unique(c(downstream_res$collapsed$gene_id, upstream_res$collapsed$gene_id, contained_res$collapsed$gene_id))
+  
+  #Make an empty mask
+  mask = diff_matrix
+  mask = mask[significant_hits,]
+  mask[,] = 0
+  
+  #Populate with ones where there is a significant event
+  mask[contained_res$collapsed$gene_id,"contained"] = 1
+  mask[upstream_res$collapsed$gene_id,"upstream"] = 1
+  mask[downstream_res$collapsed$gene_id,"downstream"] = 1
+  
+  return(mask)
 }
 
-copyCodingChanges <- function(modified_tx_classification, initial_tx_classification){
-  #Copy coding changes from initial classification of transcripts
-  coding = initial_tx_classification$coding
+applyEventMask <- function(classification_table, mask){
+  #Apply a mask from constructEventMask to result from applyClassifyDifference
+  classification_table$transcribed$diff = classification_table$transcribed$diff[rownames(mask),]*sign(mask)
+  classification_table$transcribed$abs_diff = classification_table$transcribed$abs_diff[rownames(mask),]*sign(mask)
+  classification_table$coding$diff = classification_table$coding$diff[rownames(mask),]*sign(mask)
+  classification_table$coding$abs_diff = classification_table$coding$abs_diff[rownames(mask),]*sign(mask)
   
-  #Keep common genes
-  gene_ids = rownames(modified_tx_classification$transcribed$diff)
-  coding$diff = coding$diff[gene_ids,] * sign(modified_tx_classification$transcribed$diff)
-  coding$abs_diff = coding$abs_diff[gene_ids,] * sign(modified_tx_classification$transcribed$diff)
-  
-  modified_tx_classification[["coding"]] = coding
-  return(modified_tx_classification)
+  return(classification_table)
 }
+
 
