@@ -74,6 +74,7 @@ applyClassifyDifference <- function(txs_list, new_annotations, cdss = NULL, prin
 
 
 calulateChangesLength <- function(changes, abs_diff = FALSE){ 
+  #Calculate the number of bases that differ between two transcripts.
   vector = c(0,0,0)
   names(vector) = c("upstream", "downstream", "contained")
   addedInSecond = changes[[2]]
