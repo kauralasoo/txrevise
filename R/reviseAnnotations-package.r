@@ -5,5 +5,7 @@
 #' @import GenomicRanges
 #' @import GenomicFeatures
 #' @import IRanges
-
+#' @import ggplot2
+#' @import scales
+#' @import grid
 NULL

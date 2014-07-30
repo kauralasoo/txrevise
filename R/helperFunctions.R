@@ -122,4 +122,42 @@ applyEventMask <- function(classification_table, mask){
   return(classification_table)
 }
 
+plotCompareProportions <- function(classification_list, facet_by){
+  
+  #Prepare data for plotting
+  data = prepareDataListForPlotting(classification_list)
+  
+  #Facet by type of splicing event
+  if(facet_by == "type"){
+    plot = ggplot(data, aes(x = comparison, fill = coding)) + 
+      geom_bar(aes(y = (..count..)/tapply(..count..,..x..,sum)[..x..])) + 
+      facet_grid(~variable)
+  } else if (facet_by == "comparison"){ #Facet by comparison
+    plot = ggplot(data, aes(x = variable, fill = coding)) + 
+      geom_bar(aes(y = (..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) + 
+      facet_grid(~comparison) 
+  }
+  
+  #Common code:
+  plot = plot + scale_y_continuous(labels = percent_format()) +
+    theme(legend.position = c(0,1), legend.justification = c(0, 1), legend.key.size = unit(0.4, "line")) + 
+    ylab("Percentage") + 
+    scale_fill_discrete(name = "Type") + 
+    theme(axis.text.x = element_text(angle = 20), axis.title.x = element_blank())
+  return(plot)
+}
 
+prepareDataListForPlotting <- function(classification_list, type_labels = c("5' End", "3' End", "Internal")){
+  #Apply prepareDataForPlotting to a list of classification objects
+  plot_data = lapply(classification_list, prepareDataForPlotting, remove_multiple = FALSE)
+  names = names(plot_data)
+  complete_data = c()
+  for (name in names){
+    data_set = plot_data[[name]]
+    data_set$comparison = name
+    complete_data = rbind(complete_data, data_set)
+  }
+  complete_data$comparison = factor(complete_data$comparison, levels = names)
+  levels(complete_data$variable) = type_labels
+  return(complete_data)
+}
