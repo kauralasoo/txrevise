@@ -163,6 +163,7 @@ prepareDataListForPlotting <- function(classification_list, type_labels = c("5' 
 }
 
 extractEventLengths <- function(class_object, max_length = 7500){
+  #Convert classification object into a data.frame of event lengths
   transcribed = melt(class_object$transcribed$diff)
   coding = melt(class_object$coding$diff)
   coding$type = "coding"
