@@ -161,3 +161,34 @@ prepareDataListForPlotting <- function(classification_list, type_labels = c("5' 
   levels(complete_data$variable) = type_labels
   return(complete_data)
 }
+
+extractEventLengths <- function(class_object, max_length = 7500){
+  transcribed = melt(class_object$transcribed$diff)
+  coding = melt(class_object$coding$diff)
+  coding$type = "coding"
+  transcribed$type = "all"
+  
+  #Combine the two
+  data = rbind(transcribed, coding)
+  data = data[data$value != 0,]
+  levels(data$variable) = c("5'","3'","Internal")
+  data$joint = as.factor(paste(data$variable, data$type))
+  
+  #Filter very long events
+  data$value[data$value > max_length] = max_length
+  
+  return(data)
+}
+
+plotEventLengths <- function(event_lengths, jitter_width = .2, jitter_size = 0.8){
+  #Plot event lengths for different types of events
+  plot = ggplot(event_lengths, aes(x = joint, y = value, fill = type, color = type)) + 
+    geom_violin(adjust = 0.8, scale = "width") + 
+    scale_y_continuous(limit = c(0,7500)) +
+    theme(axis.title.x = element_blank(), legend.position = c(1,1), 
+          legend.justification = c(1, 1), 
+          legend.key.size = unit(1, "line")) +
+    ylab("Length (nt)") + 
+    geom_jitter(position = position_jitter(width=jitter_width), color = "black", size = jitter_size)
+  return(plot)
+}
