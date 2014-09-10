@@ -193,3 +193,31 @@ plotEventLengths <- function(event_lengths, jitter_width = .2, jitter_size = 0.8
     geom_jitter(position = position_jitter(width=jitter_width), color = "black", size = jitter_size)
   return(plot)
 }
+
+extractSplicingEvents <- function(splicing_class, unique = TRUE){
+  #Extract gene names with different alternative transcription events
+  
+  #Filter unique events
+  single_events = rep(TRUE, nrow(splicing_class$transcribed$diff))
+  if(unique){
+    single_events = rowSums(sign(splicing_class$transcribed$diff)) == 1
+  }
+  transcribed_mat = splicing_class$transcribed$diff[single_events,]
+  coding_mat = splicing_class$coding$diff[single_events,]
+  
+  #Extract coding and non-coding events for each subtype
+  result_list = list()
+  event_types = colnames(transcribed_mat)
+  for (event in event_types){
+    print(event)
+    coding_label = paste(event, "coding", sep = "_")
+    noncoding_label = paste(event, "non-coding", sep ="_")
+    
+    coding_genes = transcribed_mat[transcribed_mat[,event] > 0 & coding_mat[,event] > 0,]
+    noncoding_genes = transcribed_mat[transcribed_mat[,event] > 0 & coding_mat[,event] == 0,]
+    
+    result_list[[coding_label]] = rownames(coding_genes)
+    result_list[[noncoding_label]] = rownames(noncoding_genes)
+  }
+  return(result_list)
+}
