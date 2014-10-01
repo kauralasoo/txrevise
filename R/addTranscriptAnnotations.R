@@ -58,3 +58,17 @@ makeGeneTranscriptFromExons <- function(exons, parent_id, make_gene = FALSE){
   values(tx_object) = metadata
   return(tx_object)
 }
+
+transcriptsToAnnotations <- function(transcript_list, gene_tx_map){
+  #Convert a list of transcripts into annotations that can be used by 
+  map_filtered = dplyr::filter(tx_gene_map, transcript_id %in% names(transcript_list))
+  gene_ids = unique(map_filtered$gene_id)
+  annotations = GRanges()
+  
+  for(gene in gene_ids){
+    tx_ids = dplyr::filter(map_filtered, gene_id == gene)$transcript_id
+    tx_annot = addTranscriptAnnotations(transcript_list[tx_ids], gene)
+    annotations = c(annotations, tx_annot)
+  }
+  return(annotations)
+}
