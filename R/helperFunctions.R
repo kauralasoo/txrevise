@@ -12,6 +12,7 @@ extractGeneTxMap <- function(annotations){
   new_tx_map = values(annotations[annotations$type == "mRNA",])
   new_tx_map = new_tx_map[,c("Parent","ID")]
   colnames(new_tx_map) = c("gene_id", "transcript_id")
+  new_tx_map = as.data.frame(new_tx_map)
   return(new_tx_map)
 }
 
