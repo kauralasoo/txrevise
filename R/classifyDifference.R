@@ -12,9 +12,13 @@ classifyDifference <- function(tx1_id, tx2_id, annotations, cdss = NULL){
   }
   else{
     result = list(transcribed = NULL, coding = NULL)
+    #Calculated the length of transcribed difference between two transcripts
     diff = calulateChangesLength(changes)
     abs_diff = calulateChangesLength(changes, abs_diff = TRUE)
-    result$transcribed = list(diff = diff, abs_diff = abs_diff)
+    transcribed_diff = data.frame(tx1_id = tx1_id, tx2_id = tx2_id, 
+                         position = names(diff), type = "transcribed", 
+                         diff = diff, abs_diff = abs_diff)
+    diff_df = dplyr::filter(transcribed_diff, diff > 0)
     
     #Calculate coding changes as well
     if(!is.null(cdss)){
@@ -22,52 +26,36 @@ classifyDifference <- function(tx1_id, tx2_id, annotations, cdss = NULL){
       if(!is.null(coding_changes)){ #Proceed only if CDS information available for both transcripts
         coding_diff = calulateChangesLength(coding_changes)
         coding_abs_diff = calulateChangesLength(coding_changes, abs_diff = TRUE)
-        result$coding = list(diff = coding_diff, abs_diff = coding_abs_diff)
+        cds_diff = data.frame(tx1_id = tx1_id, tx2_id = tx2_id, 
+                              position = names(diff), type = "coding", 
+                              diff = coding_diff, abs_diff = coding_abs_diff)
+        cds_df = dplyr::filter(cds_diff, diff > 0)
+        
+        #Bind all results together
+        diff_df = rbind(diff_df, cds_df)
       }
     }
-    return(result)
+    return(diff_df)
   }
 }
 
 applyClassifyDifference <- function(txs_list, new_annotations, cdss = NULL, printProgress = FALSE){
   #Classify all transcripts in a list
+  
+  #Prepare results data.frame
+  result = data.frame()
+  
+  #Iterate over genes
   names = names(txs_list)
-  
-  #Prepare results list
-  result = list(transcribed = list(diff = c(), abs_diff = c()))
-  if(!is.null(cdss)){ result[["coding"]] = list(diff = c(), abs_diff = c()) }
-  used_names = c()
-  
   for (name in names){
     if(printProgress){ print(name) }
     txs = txs_list[[name]]
-    classification = tryCatch(classifyDifference(txs[1], txs[2], new_annotations, cdss), warning = function(w) w)
-    if (class(classification)[1] != "simpleWarning"){ #Avoid txs with warnings (no shared exons)
-      used_names = c(used_names, name)
-      #Bind trancribed changes
-      result$transcribed$diff = rbind(result$transcribed$diff, classification$transcribed$diff)
-      result$transcribed$abs_diff = rbind(result$transcribed$abs_diff, classification$transcribed$abs_diff)     
-      #Bind coding changes if cdss is present
-      if(!is.null(cdss)){
-        result$coding$diff = rbind(result$coding$diff, classification$coding$diff)
-        result$coding$abs_diff = rbind(result$coding$abs_diff, classification$coding$abs_diff)        
-      }
+    classification = classifyDifference(txs[1], txs[2], new_annotations, cdss)
+    if (!is.null(classification)){ #Avoid genes with no overlaping transcripts
+      classification = dplyr::mutate(classification, gene_name = name)
+      result = rbind(result, classification)
     }
   }
-  #Convert to data.frame and add rownames
-  result$transcribed$diff = as.data.frame(result$transcribed$diff)
-  result$transcribed$abs_diff = as.data.frame(result$transcribed$abs_diff)
-  rownames(result$transcribed$diff) = used_names
-  rownames(result$transcribed$abs_diff) = used_names
-  
-  #Do the same for coding changes
-  if(!is.null(cdss)){ 
-    result$coding$diff = as.data.frame(result$coding$diff)
-    result$coding$abs_diff = as.data.frame(result$coding$abs_diff)
-    rownames(result$coding$diff) = used_names
-    rownames(result$coding$abs_diff) = used_names 
-  }
-  
   return(result)
 }
 
