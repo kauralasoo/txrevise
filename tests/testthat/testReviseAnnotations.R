@@ -1,6 +1,6 @@
 #New Annotations file
-exons = readRDS("../data/exons.rds")
-cdss = readRDS("../data/cdss.rds")
+exons = readRDS("../data/exons_test.rds")
+cdss = readRDS("../data/cdss_test.rds")
 new_annotations = readRDS("../data/treatment_res_annot.rds")
 
 context("Expand two transcripts into a set with only unit changes")
@@ -87,7 +87,8 @@ test_that("SUN2 has all coding changes", {
 test_that("RMI2 has no overlapping transcripts so the comparison does not make semse",{
   class = classifyDifference("ENST00000572992","ENST00000312499", new_annotations, cdss)
   expect_equal(class, NULL)
-  warn = tryCatch({x = classifyDifference("ENST00000572992","ENST00000312499", new_annotations, cdss)}, warning = function(w){return(w)})
+  warn = tryCatch({x = classifyDifference("ENST00000572992","ENST00000312499", new_annotations, cdss)}, 
+                  warning = function(w){return(w)})
   expect_equal(class(warn)[1], "simpleWarning")
 })
 
@@ -105,7 +106,8 @@ test_that("NCOA7 - changes both upstreatm and downstream",{
   class1 = applyClassifyDifference(tx_list, new_annotations, cdss)
   
   #Run with new annotations
-  tx_list_new = list(NCOA7 = c("ENST00000438495","ENST00000438495.2"), OSBPL9 = c("ENST00000428468","ENST00000428468.2"))
+  tx_list_new = list(NCOA7 = c("ENST00000438495","ENST00000438495.2"), 
+                     OSBPL9 = c("ENST00000428468","ENST00000428468.2"))
   class2 = applyClassifyDifference(tx_list_new, new_annotations)
   
   coding_sum1 = colSums(class1$coding$diff * sign(class1$transcribed$diff)) 
