@@ -1,4 +1,3 @@
-
 compareRanges <- function(target_region, shared_region){
   #Compare two Granges to each other and decide if the target is left, right or contained in the target region
   tx_strand = extractFeature(strand(shared_region))
@@ -77,55 +76,5 @@ indentifyAddedRemovedRegions <- function(tx1_id, tx2_id, exons_list){
   result[[tx1_id]] = removedFromFirst
   result[[tx2_id]] = addedInSecond
   result[["shared_exons"]] = shared_exons
-  return(result)
-}
-
-extractTranscriptSets <- function(gene_set, gene_annot){
-  #Identify primary transcript and additional transcripts for each gene in the gene_set
-  
-  #Filter out genes of interes
-  genes = gene_annot[gene_annot$gene_id %in% gene_set,]
-  
-  #Keep only protein coding genes and transcripts
-  genes = genes[genes$gene_biotype == "protein_coding" & genes$transcript_biotype == "protein_coding",]
-  
-  #Iterate over all genes
-  transcript_list = list()
-  for(gene in unique(genes$gene_id)){
-    gene_data = genes[genes$gene_id == gene,]
-    
-    #Decide on principal isoform
-    appris_pos = gene_data[!is.na(gene_data$appris_status),]
-    if(nrow(appris_pos) > 0){
-      principal_isoform = rownames(appris_pos)[1]
-    } else{
-      principal_isoform = rownames(gene_data)[1]
-    }
-    other_isoforms = setdiff(rownames(gene_data), principal_isoform)
-    transcript_list[[principal_isoform]] = other_isoforms
-  }
-  return(transcript_list)
-}
-
-makeNewTranscripts <- function(transcript_sets, exons, gene_annot, make_events = TRUE){
-  #Create new transcripts based on transcript sets
-  principal_transcripts = names(transcript_sets)
-  result = GRanges()
-  iteration = 1
-  for (tx in principal_transcripts){
-    print(iteration)
-    iteration = iteration + 1
-    other_tx = transcript_sets[[tx]]
-    if (make_events){
-      transcript_list = constructAlternativeEvents(tx, other_tx, exons)
-    } else{
-      transcript_list = constructAlternativeTranscripts(tx, other_tx, exons)
-    }
-    gene_id = gene_annot[tx,]$gene_id
-    if(length(transcript_list) > 0){ #Only proceed if the there are any txs in the list
-      transcripts = addTranscriptAnnotations(transcript_list, gene_id)
-      result = c(result, transcripts)
-    }
-  }
   return(result)
 }
