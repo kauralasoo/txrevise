@@ -222,3 +222,13 @@ extractSplicingEvents <- function(splicing_class, unique = TRUE){
   }
   return(result_list)
 }
+
+mergeGRangesIgnoreMeta <- function(gr1, gr2){
+  #Merge two GRanges object and ignore all metadata information
+  
+  #Remove metadata from the GRanges
+  elementMetadata(gr1) <- c()
+  elementMetadata(gr2) <- c()
+  result = reduce(sort(c(gr1, gr2)))
+  return(result)
+}
