@@ -56,6 +56,11 @@ mergeGRangesIgnoreMeta <- function(gr1, gr2){
   return(result)
 }
 
+removeMetadata <- function(granges_list){
+  list = lapply(granges_list, function(x){elementMetadata(x) <- c(); return(x)})
+  return(GRangesList(list))
+}
+
 classifySplicingTable <- function(splicing_table, annotations, cdss = NULL){
   #Decided what kind of splicing events are happening based on a splcing table
   split_txs = strsplit(splicing_table$transcript_ids,",")

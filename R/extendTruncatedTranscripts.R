@@ -5,6 +5,7 @@ extendTranscriptsPerGene <- function(metadata, exons, cdss){
   longest_start_id = dplyr::filter(metadata, longest_start == 1) %>% dplyr::select(ensembl_transcript_id) %>% unlist()
   longest_end_id = dplyr::filter(metadata, longest_end == 1) %>% dplyr::select(ensembl_transcript_id) %>% unlist()
   
+  results = list()
   #Identify transcripts with missing ends
   if(length(longest_end_id) == 1){
     missing_ends = dplyr::filter(metadata, cds_end_NF == 1)$ensembl_transcript_id
@@ -13,7 +14,8 @@ extendTranscriptsPerGene <- function(metadata, exons, cdss){
     
     #Extend txs with missing ends to the longest transcripts
     missing_ends_new = lapply(missing_tx_list, extendSingleTranscript, longest_end_id, direction = "downstream", exons)
-    print(lapply(missing_ends_new, width))
+    new_ends_exon_counts = unlist(lapply(missing_ends_new, length))
+    results = c(results, missing_ends_new[new_ends_exon_counts > 0])
   }
   
   #Identify transcripts with missing starts
@@ -24,8 +26,10 @@ extendTranscriptsPerGene <- function(metadata, exons, cdss){
     
     #Add missing starts
     missing_starts_new = lapply(missing_starts_list, extendSingleTranscript, longest_end_id, direction = "upstream", exons)
-    print(lapply(missing_starts_new, width))
+    new_starts_exon_counts = lapply(missing_starts_new, length) %>% unlist()
+    results = c(results, missing_starts_new[new_starts_exon_counts > 0])
   }
+  return(GRangesList(results))
 }
 
 extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
@@ -38,6 +42,7 @@ extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
   #Identify potential unique exon in the truncated end and set a flag
   extend = TRUE
   tx_spec_exons = diff[[tx_id]]
+  print(tx_spec_exons)
   if(length(tx_spec_exons) > 0){
     tx_direction_exons = tx_spec_exons[elementMetadata(tx_spec_exons)[,direction] == 1]
     if(length(tx_direction_exons) > 0){
