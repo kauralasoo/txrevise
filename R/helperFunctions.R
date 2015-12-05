@@ -99,3 +99,37 @@ applyEventMask <- function(classification_table, mask){
   
   return(classification_table)
 }
+
+
+#' Extract gene-specifc data from annotations data frame and exons/cdss lists.
+#' 
+#' @param gene_id Ensembl id of the gene.
+#' @param annotations_df data frame containing transcript metadata.
+#' @param exons named list of GRanges objects containing the exon coordinates for each transcript.
+#' @param cdss named list of GRanges objects containing the CDS coordinates for each transcript.
+#' @return List of 3 objects: filtered gene metadata, filtered exon coordinates (gene trancripts only),
+#' filtered CDS coordinates (gene transcripts only)
+#' @author Kaur Alasoo
+#' @export 
+extractGeneData <- function(gene_id, annotations_df, exons, cdss){
+  gene_data = dplyr::filter(annotations_df, ensembl_gene_id == gene_id)
+  tx_ids = dplyr::select(gene_data, ensembl_transcript_id) %>% unlist()
+  gene_exons = exons[tx_ids]
+  gene_cdss = cdss[intersect(tx_ids, names(cdss))]
+  gene_data = list(metadata = gene_data, exons = gene_exons, cdss = gene_cdss)
+}
+
+#' Replace extended trancripts in gene-specific data list.
+#' 
+#' @param gene_data List produced by the extractGeneData function.
+#' @param extended_transcripts List produced by the extendTranscriptsPerGene function.
+#' @return Update gene_data list where original transcripts have been replaced by extended transcripts.
+#' @author Kaur Alasoo
+#' @export 
+replaceExtendedTranscripts <- function(gene_data, extended_transcripts){
+  gene_data$exons = removeMetadata(gene_data$exons)
+  gene_data$cdss = removeMetadata(gene_data$cdss)
+  gene_data$exons[names(extended_transcripts$exons)] = extended_transcripts$exons
+  gene_data$cdss[names(extended_transcripts$cdss)] = extended_transcripts$cdss
+  return(gene_data)
+}

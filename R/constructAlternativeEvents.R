@@ -1,4 +1,16 @@
-constructAlternativeEvents <- function(canonical_name, tx_names, exons){
+findTranscriptCliques <- function(granges_list){
+  tx_names = names(granges_list)
+  
+  #Construct a graph
+  edges = findOverlaps(granges_list) %>% as.data.frame() %>% 
+    dplyr::filter(queryHits != subjectHits) %>% as.matrix() %>% t() %>% as.vector()
+  tx_overlap_graph = igraph::graph(edges, directed = FALSE)
+  tx_cliques = igraph::max_cliques(tx_overlap_graph)
+  clique_list = lapply(tx_cliques, function(x){tx_names[as.vector(x)]})
+  return(clique_list)
+}
+
+constructAlternativeEvents <- function(canonical_name, tx_names, exonds){
   #Construct alternative transcription events from 2 or more transcripts
   
   event_list = GRangesList()

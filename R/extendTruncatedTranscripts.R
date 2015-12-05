@@ -11,8 +11,9 @@ extendTranscriptsPerGene <- function(metadata, exons, cdss){
   
   #Modify CDS for the transcripts that have been extended
   extended_transcripts = names(new_exons)
-  truncated_cds = dplyr::filter(metadata, ensembl_transcript_id %in% extended_transcripts)
-  new_cdss = extendTranscripts(truncated_cds, longest_start_id, longest_end_id, cdss[metadata$ensembl_transcript_id])
+  truncated_cds = dplyr::filter(metadata, ensembl_transcript_id %in% extended_transcripts) %>%
+    dplyr::filter(ensembl_transcript_id %in% names(cdss))
+  new_cdss = extendTranscripts(truncated_cds, longest_start_id, longest_end_id, cdss[intersect(names(cdss),metadata$ensembl_transcript_id)])
   
   return(list(exons = new_exons, cdss = new_cdss))
 }
