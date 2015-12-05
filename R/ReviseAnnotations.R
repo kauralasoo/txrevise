@@ -49,9 +49,18 @@ compareGRanges <- function(target_regions, shared_region){
   return(target_regions)
 }
 
+#' Identify regions that are specific to one of the two transcripts.
+#'
+#' Return NULL if there is no shared region between two transcripts.
+#' 
+#' @param tx1_id id of transcript 1.
+#' @param tx2_id id of transcript 2.
+#' @param exons_list named list of GRanges objects containing the exon coordinates for each transcript.
+#' @return List of GRanges object. First contains exons specific to transcript 1, second contains exons 
+#' specifc to transcript 2, third contains the shared exons between the two transcripts.
+#' @author Kaur Alasoo
+#' @export 
 indentifyAddedRemovedRegions <- function(tx1_id, tx2_id, exons_list){
-  #Identify regions that have been added or removed betweeb two transcripts. 
-  #Return NULL if there is no shared region between two transcripts.
   
   #Extract exons of the transcripts
   exon_set1 = exons_list[[tx1_id]]
@@ -59,13 +68,18 @@ indentifyAddedRemovedRegions <- function(tx1_id, tx2_id, exons_list){
   
   #Indentify shared exons
   shared_exons = intersect(exon_set1, exon_set2)
+  #Only keep seqLevels that correspond to shared exons
+  shared_exons = keepSeqlevels(shared_exons, unique(as.vector(seqnames(shared_exons)))) 
   if(length(shared_exons) == 0){
     warning("No shared exons between two transcripts.")
     return(NULL)
   }
   
   #Idetinfy added or removed regions
-  shared_region = union(gaps(shared_exons, start = min(start(shared_exons))), shared_exons)  
+  #Construct the GRances object of the shared region
+  shared_region = GRanges(seqnames = extractFeature(seqnames(shared_exons)),
+                          IRanges(min(start(shared_exons)),max(end(shared_exons))), 
+                          strand = extractFeature(strand(shared_exons)))
   addedInSecond = setdiff(exon_set2, shared_exons)
   addedInSecond = compareGRanges(addedInSecond, shared_region)
   removedFromFirst = setdiff(exon_set1, shared_exons)
