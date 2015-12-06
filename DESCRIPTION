@@ -17,3 +17,4 @@ LazyData: true
 Roxygen: list(wrap = FALSE)
 Suggests:
     testthat
+RoxygenNote: 5.0.1
