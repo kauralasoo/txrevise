@@ -111,8 +111,11 @@ applyEventMask <- function(classification_table, mask){
 #' filtered CDS coordinates (gene transcripts only)
 #' @author Kaur Alasoo
 #' @export 
-extractGeneData <- function(gene_id, annotations_df, exons, cdss){
+extractGeneData <- function(gene_id, annotations_df, exons, cdss, transcript_ids = NULL){
   gene_data = dplyr::filter(annotations_df, ensembl_gene_id == gene_id)
+  if (!is.null(transcript_ids)){
+    gene_data = dplyr::filter(gene_data, ensembl_transcript_id %in% transcript_ids)
+  }
   tx_ids = dplyr::select(gene_data, ensembl_transcript_id) %>% unlist()
   gene_exons = exons[tx_ids]
   gene_cdss = cdss[intersect(tx_ids, names(cdss))]
@@ -132,4 +135,49 @@ replaceExtendedTranscripts <- function(gene_data, extended_transcripts){
   gene_data$exons[names(extended_transcripts$exons)] = extended_transcripts$exons
   gene_data$cdss[names(extended_transcripts$cdss)] = extended_transcripts$cdss
   return(gene_data)
+}
+
+listUnion <- function(granges_list){
+  #Calculated the union of a GRangesList object
+  union_obj = granges_list[[1]]
+  if(length(granges_list) > 1){
+    for(i in 2:length(granges_list)){
+      union_obj = GenomicRanges::union(union_obj, granges_list[[i]]) 
+    } 
+  }
+  return(union_obj)
+}
+
+listIntersect <- function(granges_list){
+  #Calculated the union of a GRangesList object
+  union_obj = granges_list[[1]]
+  if(length(granges_list) > 1){
+    for(i in 2:length(granges_list)){
+      union_obj = GenomicRanges::intersect(union_obj, granges_list[[i]]) 
+    } 
+  }
+  return(union_obj)
+}
+
+#' Calculate the number of bases that are different between two GRanges objects.
+#'
+#' Returns both total difference as well as the difference in start and end coordinates only.
+#' 
+#' @param granges_1 GRanges object
+#' @param granges_2 GRanges object
+#' @return data_frame with total_diff, and start_end_diff columns
+#' @author Kaur Alasoo
+#' @export 
+basesDifferent <- function(granges_1, granges_2){
+  
+  #Calculate total difference
+  total_diff = sum(width(GenomicRanges::union(granges_1, granges_2))) - 
+    sum(width(GenomicRanges::intersect(granges_1, granges_2)))
+  
+  start_end_diff = abs(min(start(granges_1)) - min(start(granges_2))) + 
+    abs(max(end(granges_1)) - max(end(granges_2)))
+  
+  #Consturct a data frame with results
+  res = dplyr::data_frame(total_diff = total_diff, start_end_diff = start_end_diff)
+  return(res)
 }

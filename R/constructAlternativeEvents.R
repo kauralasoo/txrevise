@@ -1,3 +1,48 @@
+constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff = 10, max_start_end_diff = 25){
+  
+  #Identify cliques of overlapping transcripts
+  tx_cliques = findTranscriptCliques(granges_list)
+  clique_list = list()
+  
+  #Construct alternative events for each clique separately
+  clique_number = 1
+  for (tx_clique in tx_cliques){
+    clique_exons = granges_list[tx_clique]
+    shared_exons = listIntersect(clique_exons)
+    
+    #Add shared exons to the exon list
+    exon_list = clique_exons
+    exon_list$INTERSECTION = shared_exons
+    
+    #Identify all changes between transcripts and chared exons
+    changes_list = list()
+    for(tx_id in names(clique_exons)){
+      tx_changes = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
+      changes_list[tx_id] = tx_changes
+    }
+    
+    #Identify all types of alternative events
+    event_types = c("upstream", "downstream","contained")
+    event_list = list()
+    for (event_type in event_types){
+      event_changes = lapply(changes_list, extractExonsByType, event_type) %>% removeMetadata()
+      event_transcripts = lapply(event_changes, function(x){event = c(x, shared_exons) %>% sort() %>% reduce()})
+      #Remove duplicates
+      event_transcripts = event_transcripts[!duplicated(event_transcripts)]
+      #Remove events that are too similar to other events
+      event_transcripts = mergeByMaxDifference(event_transcripts, max_internal_diff, max_start_end_diff)
+      #Add events to the event list
+      event_list[[event_type]] = event_transcripts
+    }
+    #Add events to clique list
+    clique_id = paste(gene_id, paste("clique_",clique_number,sep =""), sep = ".")
+    clique_number = clique_number + 1
+    clique_list[[clique_id]] = event_list
+  }
+  
+  return(clique_list)
+}
+
 findTranscriptCliques <- function(granges_list){
   tx_names = names(granges_list)
   
@@ -6,114 +51,54 @@ findTranscriptCliques <- function(granges_list){
     dplyr::filter(queryHits != subjectHits) %>% as.matrix() %>% t() %>% as.vector()
   tx_overlap_graph = igraph::graph(edges, directed = FALSE)
   tx_cliques = igraph::max_cliques(tx_overlap_graph)
-  clique_list = lapply(tx_cliques, function(x){tx_names[as.vector(x)]})
+  clique_list = lapply(tx_cliques, function(x){tx_names[as.vector(x)]}) %>% rev()
   return(clique_list)
 }
 
-constructAlternativeEvents <- function(canonical_name, tx_names, exonds){
-  #Construct alternative transcription events from 2 or more transcripts
-  
-  event_list = GRangesList()
-  
-  #Iterate over all alternative transcripts
-  upstream_list = GRangesList()
-  downstream_list = GRangesList()
-  contained_list = GRangesList()
-  
-  for (tx_name in tx_names){
-    #Iterate over alternative transcripts
-    changes = indentifyAddedRemovedRegions(tx_name, canonical_name, exons)
-    
-    if(!is.null(changes)){ 
-      #Extract changes
-      canonical_changes = changes[[canonical_name]]
-      tx_changes = changes[[tx_name]]
-      shared_exons = changes$shared_exons
-      
-      upstream_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "upstream", id_base = tx_name)
-      downstream_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "downstream", id_base = tx_name)
-      contained_events = constructEventsByType(canonical_changes, tx_changes, shared_exons, type = "contained", id_base = tx_name)
-      
-      #Merge into respective lists
-      upstream_list = mergeGRangesList(upstream_list, upstream_events)
-      downstream_list = mergeGRangesList(downstream_list, downstream_events)
-      contained_list = mergeGRangesList(contained_list, contained_events)
-    }
-  }
-  #Merge all events together
-  all_events = c(upstream_list, downstream_list, contained_list)
-  return(all_events)
-}
-
-constructEventsByType <- function(canonical_changes, tx_changes, shared_exons, type, id_base){
-  #Construct two new alternative transcription events based on changes and type.
+extractExonsByType <- function(granges, type){
+  #From a indentifyAddedRemovedRegions object extract changes by the part of the transcript that is affectes
   
   #Check that type is specified correctly
   if (!(type %in% c("upstream","downstream", "contained"))){
     stop("Type has to be either 'upstream', 'downstream' or 'contained'")
   }
   
-  #Keep changes of specific type
-  if(length(canonical_changes) > 0){
-    canonical_changes = canonical_changes[as.numeric(values(canonical_changes)[,type]) == 1]
-    values(canonical_changes) = c()
-  }
-  if(length(tx_changes) > 0){
-    tx_changes = tx_changes[as.numeric(values(tx_changes)[,type]) == 1] 
-    values(tx_changes) = c()
-  }
-  total_length = length(tx_changes) + length(canonical_changes)
-  if(total_length > 0){
-    #Remove annotation columns before concatenation
-    
-    #Make two new transcripts
-    tx1 = c(shared_exons, canonical_changes)
-    tx1 = tx1[order(tx1)]
-    values(tx1) = data.frame(modification = type, stringsAsFactors = FALSE)
-    tx2 = c(shared_exons, tx_changes)
-    tx2 = tx2[order(tx2)]
-    values(tx2) = data.frame(modification = type, stringsAsFactors = FALSE)
-    
-    #Return as list
-    result = list()
-    result[[paste(id_base, ".", type, "1", sep = "")]] = tx1
-    result[[paste(id_base, ".", type, "2", sep = "")]] = tx2
-    return(result)
-  } else {
-    return(NULL)
-  }
+  filtered_exons = granges[elementMetadata(granges)[,type] == 1,]
+  return(filtered_exons)
 }
 
-mergeGRangesList <- function(list1, list2){
-  #Merges entries form list2 into list1 and ignore duplicates
-  names2 = names(list2)
-  for(name in names2){
-    if(length(list1) == 0){
-      list1[[name]] = list2[[name]]
-    } else if (!txIsInList(list2[[name]], list1)){
-      list1[[name]] = list2[[name]]
+mergeByMaxDifference <- function(granges_list, max_internal_diff = 10, max_start_end_diff = 25){
+  
+  #Mergeing only makes sense for lists that have more than one element
+  if (length(granges_list) < 2){
+    return(granges_list)
+  }
+
+  #Extract transcript names
+  tx_names = names(granges_list)
+  new_list = granges_list[1]
+  
+  #Iterate over all transcripts
+  for(i in 2:length(tx_names)){
+    current_name = tx_names[i]
+    current_tx = granges_list[[current_name]]
+    
+    #Calculate the difference between the current transcript and previosuly added transcripts
+    diff_mat = dplyr::data_frame()
+    for(old_tx in new_list){
+      diff = basesDifferent(current_tx, old_tx)
+      if(nrow(diff_mat) == 0){
+        diff_mat = diff
+      }else{
+        diff_mat = rbind(diff_mat, diff)
+      }
+    }    
+    #Calculate internal diff
+    diff_mat = dplyr::mutate(diff_mat, internal_diff = start_end_diff - total_diff)
+    #If the current transcript is sufficiently different then added it to the list of transcripts
+    if ((min(diff_mat$internal_diff) > max_internal_diff) | (min(diff_mat$start_end_diff) > max_start_end_diff)){
+      new_list[[current_name]] = current_tx
     }
   }
-  return(list1)
-}
-
-splitEvents <- function(events){
-  #Split new events into upstream, downstream and contained to make gff files
-  genes = events[events$type == "gene",]
-  
-  #Process events
-  upstream_events = splitEventsHelper(events, genes, "upstream")
-  downstream_events = splitEventsHelper(events, genes, "downstream")
-  contained_events = splitEventsHelper(events, genes, "contained")
-  
-  result = list(upstream = upstream_events, downstream = downstream_events, contained = contained_events)
-  return(result)
-}
-
-splitEventsHelper <- function(events, genes, modification){
-  #Helper function for splitEvent
-  upstream_events = events[events$modification == modification,]
-  upstream_genes = genes[genes$gene_id %in% unique(upstream_events$gene_id)]
-  upstream_events = c(upstream_genes, upstream_events)
-  return(upstream_events)
+  return(new_list)
 }
