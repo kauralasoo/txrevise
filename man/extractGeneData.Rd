@@ -4,7 +4,7 @@
 \alias{extractGeneData}
 \title{Extract gene-specifc data from annotations data frame and exons/cdss lists.}
 \usage{
-extractGeneData(gene_id, annotations_df, exons, cdss)
+extractGeneData(gene_id, annotations_df, exons, cdss, transcript_ids = NULL)
 }
 \arguments{
 \item{gene_id}{Ensembl id of the gene.}

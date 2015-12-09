@@ -1,3 +1,19 @@
+#' Construct alternative transcription events form a list of transcripts.
+#'
+#' Also works if not all transcripts of a gene overlap with each other. In this case the transcripts are first 
+#' split into overlapping sets (cliques in the transcript overlap graph) and events are calculated within
+#' each set independently.
+#' 
+#' @param granges_list List of GRanges objects containing the exon coordinates of each transcript 
+#' (One object per transcript).
+#' @param gene_id ID of the the gene to which the transcripts belong to.
+#' @param max_internal_diff maximal internal difference between two evets for them to be considered the same.
+#' @param max_start_end_diff maximal difference at the start and end of two events for them to be considered 
+#' the same.
+#' @return Three-level list. First level correspond the each set of overlapping transcripts, second 
+#' level contains lists of downstream, upstream and contained alternative transcription events.
+#' @author Kaur Alasoo
+#' @export 
 constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff = 10, max_start_end_diff = 25){
   
   #Identify cliques of overlapping transcripts
