@@ -1,7 +1,9 @@
 #' Extend truncated transcripts to the longest annotated transcript.
 #'
-#' Identify transcripts that are flagged as start or end not found and extend them until 
-#' the length of the longest transcript of the gene.
+#' Identify transcripts that are flagged as start or end not found and extend them by adding 
+#' missing exons from the longest transcript of the gene. Importantly, if the last exon
+#' at the truncated end is not present in the longest transcript, then the truncated transcript 
+#' will not be extended, because there is no information supporting that exon junction.
 #' 
 #' @param metadata data frame of transcript metadata (required columns: ensembl_transcript_id, 
 #' longest_start, longest_end, cds_start_NF, cds_end_NF, cds_start_end_NF).

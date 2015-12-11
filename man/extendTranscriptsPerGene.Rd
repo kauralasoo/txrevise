@@ -19,8 +19,10 @@ List of GRanges lists (exons and cdss). Contains the update exon and CDS coordin
 transcripts that were previously truncated.
 }
 \description{
-Identify transcripts that are flagged as start or end not found and extend them until 
-the length of the longest transcript of the gene.
+Identify transcripts that are flagged as start or end not found and extend them by adding 
+missing exons from the longest transcript of the gene. Importantly, if the last exon
+at the truncated end is not present in the longest transcript, then the truncated transcript 
+will not be extended, because there is no information supporting that exon junction.
 }
 \author{
 Kaur Alasoo
