@@ -69,7 +69,7 @@ indentifyAddedRemovedRegions <- function(tx1_id, tx2_id, exons_list){
   #Indentify shared exons
   shared_exons = intersect(exon_set1, exon_set2)
   #Only keep seqLevels that correspond to shared exons
-  shared_exons = keepSeqlevels(shared_exons, unique(as.vector(seqnames(shared_exons)))) 
+  shared_exons = GenomeInfoDb::keepSeqlevels(shared_exons, unique(as.vector(seqnames(shared_exons)))) 
   if(length(shared_exons) == 0){
     warning("No shared exons between two transcripts.")
     return(NULL)

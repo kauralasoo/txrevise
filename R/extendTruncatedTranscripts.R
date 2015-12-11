@@ -33,7 +33,7 @@ extendTranscriptsPerGene <- function(metadata, exons, cdss){
 
 extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
   #Extend single transcript tx_id based on reference transcript (longest_tx_id) in a specifed direction
-  print(tx_id)
+  #print(tx_id)
   tx_exons = exons[[tx_id]]
   longest_tx_exons = exons[[longest_tx_id]]
   diff = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, longest_tx_id, exons[c(tx_id, longest_tx_id)])
@@ -59,7 +59,7 @@ extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
   }
   
   #If truncated transcript has unique exon (or a bit of exon) in the truncated end, then do not extend
-  print(extend)
+  #print(extend)
   if(!extend){
     return(GRanges())
   }

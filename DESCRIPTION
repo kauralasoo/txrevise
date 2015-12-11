@@ -3,18 +3,23 @@ Title: What the package does (short line)
 Version: 0.1
 Authors.R: "Kaur Alasoo <kaur.alasoo@gmail.com> [aut, cre]"
 Description: What the package does (paragraph)
-Depends:
+Depends: 
     R (>= 3.0.2)
-Imports:
+Imports: 
     IRanges,
     GenomicFeatures,
     GenomicRanges,
     scales,
     grid,
-    ggplot2
+    ggplot2,
+    dplyr,
+    igraph
 License: What license is it under?
 LazyData: true
 Roxygen: list(wrap = FALSE)
-Suggests:
-    testthat
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr

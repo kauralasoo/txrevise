@@ -1,0 +1,76 @@
+---
+title: "Using reviseAnnotations to construct alternative transcription events"
+author: "Kaur Alasoo"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo=FALSE}
+suppressMessages(library("devtools"))
+suppressMessages(library("dplyr"))
+suppressMessages(suppressWarnings(load_all("../../wiggleplotr/")))
+suppressMessages(load_all("../../reviseAnnotations/"))
+```
+
+## Import data form disk
+```{r}
+frmd4b_data = readRDS("../data/FRMD4B.rds")
+plotting_annotations = select(frmd4b_data$metadata, ensembl_transcript_id, ensembl_gene_id, external_gene_name, strand) %>% 
+  dplyr::rename(transcript_id = ensembl_transcript_id, gene_id = ensembl_gene_id, gene_name = external_gene_name)
+knitr::kable(plotting_annotations)
+```
+
+## Extending truncated transcripts
+Once we have loaded the data, we can make a plot of the initial transcripts. For this we need the plotTranscripts function form the wiggleplotr package.
+```{r,fig.width=6, fig.height=6}
+wiggleplotr::plotTranscripts(frmd4b_data$exons, frmd4b_data$cdss, plotting_annotations, rescale_introns = TRUE)
+
+```
+
+There appear to be multiple short transcripts that do not overlap with each other. However, some of them are marked in Ensembl to have either missing 5' ends, missing 3' ends or both.
+
+```{r}
+missing_ends = dplyr::select(frmd4b_data$metadata, ensembl_transcript_id, mRNA_start_NF, mRNA_end_NF, cds_start_NF, cds_end_NF)
+knitr::kable(missing_ends)
+```
+
+We can extend the transcripts with missing ends until the longest transcript of the gene.
+
+```{r, fig.width=6, fig.height=6}
+gene_extended_tx = extendTranscriptsPerGene(frmd4b_data$metadata, frmd4b_data$exons, frmd4b_data$cdss)
+gene_data_ext = replaceExtendedTranscripts(frmd4b_data, gene_extended_tx)
+wiggleplotr::plotTranscripts(gene_data_ext$exons, gene_data_ext$cdss, plotting_annotations, rescale_introns = TRUE)
+```
+
+## Constructing alternative transcription events
+Finally, we can used the extended transcripts to construct alternative transcription events. This is done separately for each set of overlapping transcripts (maxmial cliques in the transcript-transcript overlap graph).
+
+```{r}
+alt_events = constructAlternativeEvents(gene_data_ext$exons, "ENSG00000114541")
+```
+
+### First set of overlapping transcripts
+Downstream events for the first clique:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000114541.clique_1$downstream, alt_events$ENSG00000114541.clique_1$downstream, plotting_annotations, rescale_introns = TRUE)
+```
+
+Upstream events for the first clique:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000114541.clique_1$upstream, alt_events$ENSG00000114541.clique_1$upstream, plotting_annotations, rescale_introns = TRUE)
+```
+
+### Second set of overlapping transcripts
+Downstream events for the second clique:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000114541.clique_2$downstream, alt_events$ENSG00000114541.clique_2$downstream, plotting_annotations, rescale_introns = TRUE)
+```
+
+Upstream events for the second clique:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000114541.clique_2$upstream, alt_events$ENSG00000114541.clique_2$upstream, plotting_annotations, rescale_introns = TRUE)
+```
