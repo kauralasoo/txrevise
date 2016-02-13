@@ -1,6 +1,7 @@
 
 tests/data/cdss.rds
-
 tests/data/exons.rds
-
 tests/data/Homo_sapiens.GRCh37.74.TranscriptDb.db
+inst/doc
+
+tests/testthat/.Rhistory
