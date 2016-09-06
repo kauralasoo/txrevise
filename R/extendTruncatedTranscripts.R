@@ -46,10 +46,10 @@ extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
   if(length(tx_spec_exons) > 0){
     tx_direction_exons = tx_spec_exons[elementMetadata(tx_spec_exons)[,direction] == 1]
     if(length(tx_direction_exons) > 0){
-      #Identify original exons of the turncated transcript
-      tx_dir_full_exons = tx_exons[subjectHits(findOverlaps(tx_direction_exons, tx_exons))]
+      #Identify original exons of the truncated transcript
+      tx_dir_full_exons = tx_exons[S4Vectors::subjectHits(GenomicRanges::findOverlaps(tx_direction_exons, tx_exons))]
       #Find if the orginal exons overlap exons int the longest transcript
-      query_hits = queryHits(findOverlaps(tx_dir_full_exons, longest_tx_exons))
+      query_hits = S4Vectors::queryHits(GenomicRanges::findOverlaps(tx_dir_full_exons, longest_tx_exons))
       if(length(query_hits) > length(tx_direction_exons)){ #Some query exons do not overlap exons in longest transcript
         extend = FALSE
       } else{
