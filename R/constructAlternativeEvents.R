@@ -19,41 +19,44 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
   #Identify cliques of overlapping transcripts
   tx_cliques = findTranscriptCliques(granges_list)
   clique_list = list()
-  
+
   #Construct alternative events for each clique separately
   clique_number = 1
   for (tx_clique in tx_cliques){
     clique_exons = granges_list[tx_clique]
     shared_exons = listIntersect(clique_exons)
-
-    #Add shared exons to the exon list
-    exon_list = clique_exons
-    exon_list[["INTERSECTION"]] = shared_exons
-
-    #Identify all changes between transcripts and chared exons
-    changes_list = list()
-    for(tx_id in names(clique_exons)){
-      tx_changes = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
-      changes_list[[tx_id]] = tx_changes
+    
+    #Only porceed with the analysis in the clique if there are at least some shared exons
+    if(length(shared_exons) > 0){
+      #Add shared exons to the exon list
+      exon_list = clique_exons
+      exon_list[["INTERSECTION"]] = shared_exons
+      
+      #Identify all changes between transcripts and chared exons
+      changes_list = list()
+      for(tx_id in names(clique_exons)){
+        tx_changes = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
+        changes_list[[tx_id]] = tx_changes
+      }
+      
+      #Identify all types of alternative events
+      event_types = c("upstream", "downstream","contained")
+      event_list = list()
+      for (event_type in event_types){
+        event_changes = lapply(changes_list, extractExonsByType, event_type) %>% removeMetadata()
+        event_transcripts = lapply(event_changes, function(x){event = c(x, shared_exons) %>% sort() %>% reduce()})
+        #Remove duplicates
+        event_transcripts = event_transcripts[!duplicated(event_transcripts)]
+        #Remove events that are too similar to other events
+        event_transcripts = mergeByMaxDifference(event_transcripts, max_internal_diff, max_start_end_diff)
+        #Add events to the event list
+        event_list[[event_type]] = event_transcripts
+      }
+      #Add events to clique list
+      clique_id = paste(gene_id, paste("clique_",clique_number,sep =""), sep = ".")
+      clique_number = clique_number + 1
+      clique_list[[clique_id]] = event_list
     }
-
-    #Identify all types of alternative events
-    event_types = c("upstream", "downstream","contained")
-    event_list = list()
-    for (event_type in event_types){
-      event_changes = lapply(changes_list, extractExonsByType, event_type) %>% removeMetadata()
-      event_transcripts = lapply(event_changes, function(x){event = c(x, shared_exons) %>% sort() %>% reduce()})
-      #Remove duplicates
-      event_transcripts = event_transcripts[!duplicated(event_transcripts)]
-      #Remove events that are too similar to other events
-      event_transcripts = mergeByMaxDifference(event_transcripts, max_internal_diff, max_start_end_diff)
-      #Add events to the event list
-      event_list[[event_type]] = event_transcripts
-    }
-    #Add events to clique list
-    clique_id = paste(gene_id, paste("clique_",clique_number,sep =""), sep = ".")
-    clique_number = clique_number + 1
-    clique_list[[clique_id]] = event_list
   }
   
   return(clique_list)
@@ -154,9 +157,12 @@ flattenAlternativeEvents <- function(alt_events){
     event_types = names(clique_events)
     for (event in event_types){
       event_list = clique_events[[event]]
-      new_names = paste(gene_clique, event, names(event_list), sep =".")
-      names(event_list) = new_names
-      flat_event_list = c(flat_event_list, event_list)
+      #Only add events to the final list if there are at least 2 alternative transcripts
+      if (length(event_list) > 1){
+        new_names = paste(gene_clique, event, names(event_list), sep =".")
+        names(event_list) = new_names
+        flat_event_list = c(flat_event_list, event_list)
+      }
     }
   }
   return(flat_event_list)
