@@ -119,3 +119,36 @@ mergeByMaxDifference <- function(granges_list, max_internal_diff = 10, max_start
   }
   return(new_list)
 }
+
+# Apply constructAlternativeEvents to gene_id and metadata objects
+constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cdss){
+  
+  #Extract gene data from annotations
+  gene_data = reviseAnnotations::extractGeneData(gene_id, gene_metadata, exons, cdss)
+  
+  #Extend truncated transcripts until the longest transcript
+  gene_extended_tx = reviseAnnotations::extendTranscriptsPerGene(gene_data$metadata, gene_data$exons, gene_data$cdss)
+  gene_data_ext = reviseAnnotations::replaceExtendedTranscripts(gene_data, gene_extended_tx)
+  
+  #Construct alternative events
+  alt_events = reviseAnnotations::constructAlternativeEvents(gene_data_ext$exons, gene_id)
+  return(alt_events)
+}
+
+#Combine all alternative events into a single list with appropriate names
+flattenAlternativeEvents <- function(alt_events){
+  flat_event_list = list()
+  #Iterate through all events
+  gene_cliques = names(alt_events)
+  for (gene_clique in gene_cliques){
+    clique_events = alt_events[[gene_clique]]
+    event_types = names(clique_events)
+    for (event in event_types){
+      event_list = clique_events[[event]]
+      new_names = paste(gene_clique, event, names(event_list), sep =".")
+      names(event_list) = new_names
+      flat_event_list = c(flat_event_list, event_list)
+    }
+  }
+  return(flat_event_list)
+}

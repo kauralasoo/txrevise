@@ -56,10 +56,7 @@ mergeGRangesIgnoreMeta <- function(gr1, gr2){
   return(result)
 }
 
-removeMetadata <- function(granges_list){
-  list = lapply(granges_list, function(x){elementMetadata(x) <- c(); return(x)})
-  return(GRangesList(list))
-}
+
 
 classifySplicingTable <- function(splicing_table, annotations, cdss = NULL){
   #Decided what kind of splicing events are happening based on a splcing table
@@ -137,8 +134,8 @@ replaceExtendedTranscripts <- function(gene_data, extended_transcripts){
   return(gene_data)
 }
 
+#' Calculate the union of a GRangesList object
 listUnion <- function(granges_list){
-  #Calculated the union of a GRangesList object
   union_obj = granges_list[[1]]
   if(length(granges_list) > 1){
     for(i in 2:length(granges_list)){
@@ -148,8 +145,8 @@ listUnion <- function(granges_list){
   return(union_obj)
 }
 
+#' Calculate the intersection of a GRangesList object
 listIntersect <- function(granges_list){
-  #Calculated the union of a GRangesList object
   union_obj = granges_list[[1]]
   if(length(granges_list) > 1){
     for(i in 2:length(granges_list)){
@@ -180,4 +177,10 @@ basesDifferent <- function(granges_1, granges_2){
   #Consturct a data frame with results
   res = dplyr::data_frame(total_diff = total_diff, start_end_diff = start_end_diff)
   return(res)
+}
+
+#Remove elementMetadata field from the GRanges object
+removeMetadata <- function(granges_list){
+  list = lapply(granges_list, function(x){elementMetadata(x) <- c(); return(x)})
+  return(GRangesList(list))
 }
