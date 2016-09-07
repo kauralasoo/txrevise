@@ -34,27 +34,36 @@ extendTranscriptsPerGene <- function(metadata, exons, cdss){
 }
 
 extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
+  #By default, exptent the transcript
+  extend = TRUE
+  
   #Extend single transcript tx_id based on reference transcript (longest_tx_id) in a specifed direction
   #print(tx_id)
+  #print(longest_tx_id)
   tx_exons = exons[[tx_id]]
   longest_tx_exons = exons[[longest_tx_id]]
-  diff = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, longest_tx_id, exons[c(tx_id, longest_tx_id)])
   
-  #Identify potential unique exon in the truncated end and set a flag
-  extend = TRUE
-  tx_spec_exons = diff[[tx_id]]
-  if(length(tx_spec_exons) > 0){
-    tx_direction_exons = tx_spec_exons[elementMetadata(tx_spec_exons)[,direction] == 1]
-    if(length(tx_direction_exons) > 0){
-      #Identify original exons of the truncated transcript
-      tx_dir_full_exons = tx_exons[S4Vectors::subjectHits(GenomicRanges::findOverlaps(tx_direction_exons, tx_exons))]
-      #Find if the orginal exons overlap exons int the longest transcript
-      query_hits = S4Vectors::queryHits(GenomicRanges::findOverlaps(tx_dir_full_exons, longest_tx_exons))
-      if(length(query_hits) > length(tx_direction_exons)){ #Some query exons do not overlap exons in longest transcript
-        extend = FALSE
-      } else{
-        if (sum(width(tx_direction_exons)) > 15){ #All query exons overlap the longest trancript, but the differences is greater than 10 nucleotides
+  #Do not exptend if the transcripts do not overlap with each other
+  if(length(findOverlaps(tx_exons, longest_tx_exons)) == 0){
+    extend = FALSE
+  } else{
+    diff = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, longest_tx_id, exons[c(tx_id, longest_tx_id)])
+    
+    #Identify potential unique exon in the truncated end and set a flag
+    tx_spec_exons = diff[[tx_id]]
+    if(length(tx_spec_exons) > 0){
+      tx_direction_exons = tx_spec_exons[elementMetadata(tx_spec_exons)[,direction] == 1]
+      if(length(tx_direction_exons) > 0){
+        #Identify original exons of the truncated transcript
+        tx_dir_full_exons = tx_exons[S4Vectors::subjectHits(GenomicRanges::findOverlaps(tx_direction_exons, tx_exons))]
+        #Find if the orginal exons overlap exons int the longest transcript
+        query_hits = S4Vectors::queryHits(GenomicRanges::findOverlaps(tx_dir_full_exons, longest_tx_exons))
+        if(length(query_hits) > length(tx_direction_exons)){ #Some query exons do not overlap exons in longest transcript
           extend = FALSE
+        } else{
+          if (sum(width(tx_direction_exons)) > 15){ #All query exons overlap the longest trancript, but the differences is greater than 15 nucleotides
+            extend = FALSE
+          }
         }
       }
     }
