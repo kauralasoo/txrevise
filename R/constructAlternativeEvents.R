@@ -25,11 +25,11 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
   for (tx_clique in tx_cliques){
     clique_exons = granges_list[tx_clique]
     shared_exons = listIntersect(clique_exons)
-    
+
     #Add shared exons to the exon list
     exon_list = clique_exons
-    exon_list$INTERSECTION = shared_exons
-    
+    exon_list[["INTERSECTION"]] = shared_exons
+
     #Identify all changes between transcripts and chared exons
     changes_list = list()
     for(tx_id in names(clique_exons)){
@@ -75,12 +75,18 @@ extractExonsByType <- function(granges, type){
   #From a indentifyAddedRemovedRegions object extract changes by the part of the transcript that is affectes
   
   #Check that type is specified correctly
-  if (!(type %in% c("upstream","downstream", "contained"))){
+  correct_event_types = c("upstream","downstream", "contained")
+  if (!(type %in% correct_event_types)){
     stop("Type has to be either 'upstream', 'downstream' or 'contained'")
   }
   
-  filtered_exons = granges[elementMetadata(granges)[,type] == 1,]
-  return(filtered_exons)
+  #Deal with granges objects that have zero rows
+  if(length(granges) == 0){
+    return(granges)
+  } else{
+    filtered_exons = granges[elementMetadata(granges)[,type] == 1,]
+    return(filtered_exons)
+  }
 }
 
 #' If two transcripts in a GRanges list a are not sufficiently different from each other, then keep only one.
@@ -122,6 +128,9 @@ mergeByMaxDifference <- function(granges_list, max_internal_diff = 10, max_start
 
 # Apply constructAlternativeEvents to gene_id and metadata objects
 constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cdss){
+  
+  #Print current gene_id
+  print(gene_id)
   
   #Extract gene data from annotations
   gene_data = reviseAnnotations::extractGeneData(gene_id, gene_metadata, exons, cdss)
