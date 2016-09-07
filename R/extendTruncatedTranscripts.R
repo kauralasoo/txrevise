@@ -48,10 +48,11 @@ extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
     extend = FALSE
   } else{
     diff = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, longest_tx_id, exons[c(tx_id, longest_tx_id)])
-    
+
     #Identify potential unique exon in the truncated end and set a flag
     tx_spec_exons = diff[[tx_id]]
     if(length(tx_spec_exons) > 0){
+      #Does the truncateted transcript have unique exons at the truncated end?
       tx_direction_exons = tx_spec_exons[elementMetadata(tx_spec_exons)[,direction] == 1]
       if(length(tx_direction_exons) > 0){
         #Identify original exons of the truncated transcript
@@ -78,11 +79,15 @@ extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
   else{
     #Find the exons that are missing in truncated transcript
     missing_exons = diff[[longest_tx_id]]
-    missing_direction_exons = missing_exons[elementMetadata(missing_exons)[,direction] == 1,]
-    #print(missing_direction_exons)
-    
-    #Add new exons to the original transcript
-    new_exons = mergeGRangesIgnoreMeta(tx_exons, missing_direction_exons)
+    new_exons = GRanges()
+    #Only extend transcript if there are missing exons present
+    if(length(missing_exons) > 0){
+      missing_direction_exons = missing_exons[elementMetadata(missing_exons)[,direction] == 1,]
+      if(length(missing_direction_exons) > 0){
+        #Add new exons to the original transcript
+        new_exons = mergeGRangesIgnoreMeta(tx_exons, missing_direction_exons)
+      }
+    }
     return(new_exons)
   }
 }
@@ -100,7 +105,7 @@ extendTranscripts <- function(truncated_transcripts_meta, longest_start_id, long
     missing_ends = dplyr::filter(truncated_transcripts_meta, cds_end_NF == 1)$ensembl_transcript_id
     missing_tx_list = as.list(missing_ends)
     names(missing_tx_list) = missing_ends
-    
+
     #Extend txs with missing ends to the longest transcripts
     missing_ends_new = lapply(missing_tx_list, extendSingleTranscript, longest_end_id, direction = "downstream", feature_list)
     new_ends_exon_counts = lapply(missing_ends_new, length) %>% unlist()
