@@ -36,7 +36,7 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
       tx_changes = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
       changes_list[[tx_id]] = tx_changes
     }
-    
+
     #Identify all types of alternative events
     event_types = c("upstream", "downstream","contained")
     event_list = list()
@@ -83,6 +83,7 @@ extractExonsByType <- function(granges, type){
   return(filtered_exons)
 }
 
+#' If two transcripts in a GRanges list a are not sufficiently different from each other, then keep only one.
 mergeByMaxDifference <- function(granges_list, max_internal_diff = 10, max_start_end_diff = 25){
   
   #Mergeing only makes sense for lists that have more than one element
@@ -110,7 +111,7 @@ mergeByMaxDifference <- function(granges_list, max_internal_diff = 10, max_start
       }
     }    
     #Calculate internal diff
-    diff_mat = dplyr::mutate(diff_mat, internal_diff = start_end_diff - total_diff)
+    diff_mat = dplyr::mutate(diff_mat, internal_diff = total_diff - start_end_diff)
     #If the current transcript is sufficiently different then added it to the list of transcripts
     if ((min(diff_mat$internal_diff) > max_internal_diff) | (min(diff_mat$start_end_diff) > max_start_end_diff)){
       new_list[[current_name]] = current_tx
