@@ -167,3 +167,13 @@ flattenAlternativeEvents <- function(alt_events){
   }
   return(flat_event_list)
 }
+
+constructEventMetadata <- function(transcript_ids){
+  event_metadata = data.frame(transcript_id = transcript_ids) %>% 
+    tidyr::separate(transcript_id, c('ensembl_gene_id', 'clique_id', 'event_type','ensembl_transcript_id'), 
+                    sep = "\\.", remove = F) %>%
+    dplyr::mutate(gene_id = paste(ensembl_gene_id, clique_id, event_type, sep = ".")) %>%
+    dplyr::mutate(transcript_id = as.character(transcript_id)) %>%
+    tbl_df()
+  return(event_metadata)
+}
