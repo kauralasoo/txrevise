@@ -184,3 +184,38 @@ removeMetadata <- function(granges_list){
   list = lapply(granges_list, function(x){elementMetadata(x) <- c(); return(x)})
   return(GRangesList(list))
 }
+
+#' Convert a data frame into a GRanges object
+#' 
+#' Seqnames, strand, start and end columns are used as corresponding elements 
+#' in the GRanges object. Remaining columns are added into the elementMetadata data frame.
+#'
+#' @param df Input data frame (required columns: seqnames, start, end, strand)
+#'
+#' @return GRanges object construct from df.
+#' @export
+dataFrameToGRanges <- function(df){
+  #Convert a data.frame into a GRanges object
+  
+  gr = GenomicRanges::GRanges(seqnames = df$seqnames, 
+                              ranges = IRanges::IRanges(start = df$start, end = df$end),
+                              strand = df$strand)
+  
+  #Add metadata
+  meta = dplyr::select(df, -start, -end, -strand, -seqnames)
+  GenomicRanges::elementMetadata(gr) = meta
+  
+  return(gr)
+}
+
+#Convert revised GFF into a GRanges list of transcripts
+revisedGffToGrangesList <- function(revised_gff){
+  revised_df = GenomicRanges::as.data.frame(revised_gff) %>% 
+    tbl_df() %>% 
+    dplyr::filter(type == "exon") %>% 
+    dplyr::transmute(seqnames, start, end, strand, transcript_id = unlist(Parent)) %>%
+    dplyr::group_by(transcript_id) %>%
+    purrr::by_slice(~dataFrameToGRanges(.))
+  granges_list = setNames(revised_df$.out, revised_df$transcript_id)
+  return(granges_list)
+}
