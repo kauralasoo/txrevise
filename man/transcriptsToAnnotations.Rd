@@ -19,4 +19,3 @@ Merged GRanges object containin proper metadata for GFF export.
 \description{
 Merge Granges object and construct gene and transcript entries. Add proper Parent-Child relationships.
 }
-

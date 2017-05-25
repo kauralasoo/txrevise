@@ -9,4 +9,3 @@ listUnion(granges_list)
 \description{
 Calculate the union of a GRangesList object
 }
-

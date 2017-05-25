@@ -33,16 +33,29 @@ extendTranscriptsPerGene <- function(metadata, exons, cdss){
   return(list(exons = new_exons, cdss = new_cdss))
 }
 
-extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
+
+#' Extend a single transcript in one direction using exons from the reference transcript
+#'
+#' @param tx_id ID of the truncated transcript.
+#' @param longest_tx_id ID of the reference transcript.
+#' @param direction Direction of extension (upstream or downstream)
+#' @param exons GRangesList of transcripts.
+#' @param max_exon_extension If truncated and reference transcripts exon bpundaries do not match,
+#' then this specifies the maximum number of allowed nucleotides that the truncated transcript can be longer 
+#' than the reference transcript for the extension to proceed.
+#'
+#' @return Extended version of the truncated transcript (GRanges object)
+extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons, max_exon_extension = 100000){
   #By default, exptent the transcript
   extend = TRUE
   
   #Extend single transcript tx_id based on reference transcript (longest_tx_id) in a specifed direction
   #print(tx_id)
   #print(longest_tx_id)
+  #print(direction)
   tx_exons = exons[[tx_id]]
   longest_tx_exons = exons[[longest_tx_id]]
-  
+
   #Do not exptend if the transcripts do not overlap with each other
   if(length(findOverlaps(tx_exons, longest_tx_exons)) == 0){
     extend = FALSE
@@ -62,7 +75,7 @@ extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons){
         if(length(query_hits) > length(tx_direction_exons)){ #Some query exons do not overlap exons in longest transcript
           extend = FALSE
         } else{
-          if (sum(width(tx_direction_exons)) > 15){ #All query exons overlap the longest trancript, but the differences is greater than 15 nucleotides
+          if (sum(width(tx_direction_exons)) > max_exon_extension){ #All query exons overlap the longest trancript, but the differences is greater than 15 nucleotides
             extend = FALSE
           }
         }
@@ -121,7 +134,7 @@ extendTranscripts <- function(truncated_transcripts_meta, longest_start_id, long
     names(missing_starts_list) = missing_starts
     
     #Add missing starts
-    missing_starts_new = lapply(missing_starts_list, extendSingleTranscript, longest_end_id, direction = "upstream", modified_features)
+    missing_starts_new = lapply(missing_starts_list, extendSingleTranscript, longest_start_id, direction = "upstream", modified_features)
     new_starts_exon_counts = lapply(missing_starts_new, length) %>% unlist()
     missing_starts_new = missing_starts_new[new_starts_exon_counts > 0]
     results = c(missing_starts_new, results[setdiff(names(results), names(missing_starts_new))])

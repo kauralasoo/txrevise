@@ -2,9 +2,11 @@
 
 export(basesDifferent)
 export(constructAlternativeEvents)
+export(dataFrameToGRanges)
 export(extendTranscriptsPerGene)
 export(extractGeneData)
 export(indentifyAddedRemovedRegions)
+export(markLongestGencodeTranscript)
 export(markLongestTranscripts)
 export(replaceExtendedTranscripts)
 export(transcriptsToAnnotations)

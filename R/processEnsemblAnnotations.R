@@ -44,3 +44,38 @@ markLongestTranscripts <- function(gene_metadata){
   marked_data = dplyr::left_join(gene_metadata, both_ends, by = "ensembl_transcript_id")
   return(marked_data)
 }
+
+
+#' For each gene in a gene metadata data frame, mark the transcript with longes sequence.
+#'
+#' @param gene_metadata Data frame with original gene metadata (required columns:
+#' ensembl_gene_id, ensembl_transcript_id, transcript_start, transcript_end, strand)
+#'
+#' @return Original metadata df with longest_start and longest_end columns added.
+#' @export
+markLongestGencodeTranscript <- function(gene_metadata){
+  #Make sure that the data frame has all of the required columns
+  assertthat::assert_that(assertthat::has_name(gene_metadata, "ensembl_gene_id"))
+  assertthat::assert_that(assertthat::has_name(gene_metadata, "ensembl_transcript_id"))
+  assertthat::assert_that(assertthat::has_name(gene_metadata, "transcript_start"))
+  assertthat::assert_that(assertthat::has_name(gene_metadata, "transcript_end"))
+  assertthat::assert_that(assertthat::has_name(gene_metadata, "strand"))
+  
+  #For each gene mark the transcript that has the longest sequence
+  longest_tx = dplyr::filter(gene_metadata, is_good_reference == 1) %>% 
+    dplyr::group_by(ensembl_gene_id) %>% 
+    dplyr::arrange(-transcript_length) %>% #Find smallest possible transcript_start coordinate
+    dplyr::select(ensembl_gene_id, ensembl_transcript_id, strand, transcript_start) %>% 
+    dplyr::filter(row_number() == 1) %>% 
+    dplyr::ungroup() %>%
+    #Use strand infromation to decide whether it is at the start or the end of the transcript
+    dplyr::transmute(ensembl_transcript_id, longest_start = 1, longest_end = 1)
+  
+  #Combine the start and end coordinates 
+  marked_data = dplyr::left_join(gene_metadata, longest_tx, by = "ensembl_transcript_id") %>% 
+    dplyr::mutate(longest_start = ifelse(is.na(longest_start), 0, longest_start),
+                  longest_end = ifelse(is.na(longest_end), 0, longest_end))
+  return(marked_data)
+}
+
+

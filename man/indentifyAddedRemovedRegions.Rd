@@ -23,4 +23,3 @@ Return NULL if there is no shared region between two transcripts.
 \author{
 Kaur Alasoo
 }
-

@@ -10,4 +10,3 @@ mergeByMaxDifference(granges_list, max_internal_diff = 10,
 \description{
 If two transcripts in a GRanges list a are not sufficiently different from each other, then keep only one.
 }
-

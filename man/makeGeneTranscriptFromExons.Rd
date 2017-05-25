@@ -9,4 +9,3 @@ makeGeneTranscriptFromExons(exons, parent_id, make_gene = FALSE)
 \description{
 Construct gene or transcript annotations from exon annotations
 }
-

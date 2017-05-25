@@ -20,4 +20,3 @@ Returns both total difference as well as the difference in start and end coordin
 \author{
 Kaur Alasoo
 }
-

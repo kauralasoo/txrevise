@@ -9,4 +9,3 @@ listIntersect(granges_list)
 \description{
 Calculate the intersection of a GRangesList object
 }
-
