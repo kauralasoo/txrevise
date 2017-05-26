@@ -16,25 +16,24 @@
 #' @export 
 constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff = 10, max_start_end_diff = 25){
   
-  #Identify cliques of overlapping transcripts
-  tx_cliques = findTranscriptCliques(granges_list)
-  clique_list = list()
+  #Identify groups of overlapping transcripts
+  tx_groups = identifyTranscriptGroups(granges_list)
+  group_list = list()
 
   #Construct alternative events for each clique separately
-  clique_number = 1
-  for (tx_clique in tx_cliques){
-    clique_exons = granges_list[tx_clique]
-    shared_exons = listIntersect(clique_exons)
+  group_number = 1
+  for (tx_group in tx_groups){
+    shared_exons = listIntersect(tx_group)
     
     #Only porceed with the analysis in the clique if there are at least some shared exons
     if(length(shared_exons) > 0){
       #Add shared exons to the exon list
-      exon_list = clique_exons
+      exon_list = tx_group
       exon_list[["INTERSECTION"]] = shared_exons
       
       #Identify all changes between transcripts and chared exons
       changes_list = list()
-      for(tx_id in names(clique_exons)){
+      for(tx_id in names(tx_group)){
         tx_changes = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
         changes_list[[tx_id]] = tx_changes
       }
@@ -53,13 +52,13 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
         event_list[[event_type]] = event_transcripts
       }
       #Add events to clique list
-      clique_id = paste(gene_id, paste("clique_",clique_number,sep =""), sep = ".")
-      clique_number = clique_number + 1
-      clique_list[[clique_id]] = event_list
+      group_id = paste(gene_id, paste("grp_",group_number,sep =""), sep = ".")
+      group_number = group_number + 1
+      group_list[[group_id]] = event_list
     }
   }
   
-  return(clique_list)
+  return(group_list)
 }
 
 findTranscriptCliques <- function(granges_list){
@@ -170,10 +169,51 @@ flattenAlternativeEvents <- function(alt_events){
 
 constructEventMetadata <- function(transcript_ids){
   event_metadata = data.frame(transcript_id = transcript_ids) %>% 
-    tidyr::separate(transcript_id, c('ensembl_gene_id', 'clique_id', 'event_type','ensembl_transcript_id'), 
+    tidyr::separate(transcript_id, c('ensembl_gene_id', 'grp_id', 'event_type','ensembl_transcript_id'), 
                     sep = "\\.", remove = F) %>%
-    dplyr::mutate(gene_id = paste(ensembl_gene_id, clique_id, event_type, sep = ".")) %>%
+    dplyr::mutate(gene_id = paste(ensembl_gene_id, grp_id, event_type, sep = ".")) %>%
     dplyr::mutate(transcript_id = as.character(transcript_id)) %>%
     tbl_df()
   return(event_metadata)
+}
+
+makeBinary <- function(ids, len){
+  result_vector = rep(0, len)
+  result_vector[ids] = 1
+  return(result_vector)
+}
+
+identifyTranscriptGroups <- function(granges_list){
+  
+  #Construct disjoint exons and count overlaps
+  disjoint_exons = purrr::reduce(granges_list, c) %>% 
+    GenomicRanges::disjoin() %>% 
+    GenomicRanges::sort()
+  overlaps = purrr::map(S4Vectors::as.list(granges_list), ~GenomicRanges::findOverlaps(.,disjoint_exons) %>% 
+                          S4Vectors::subjectHits() %>%
+                          makeBinary(.,length(disjoint_exons))) %>%
+    bind_rows()
+  
+  #Construct unique configurations
+  unique_conf = unique(overlaps) %>% as.matrix()
+  rownames(unique_conf) = apply(unique_conf, 1, paste, collapse = "")
+  
+  #Count exons and transcripts in each configuration
+  config_df = dplyr::data_frame(sharing_config = apply(overlaps, 1, paste, collapse = ""), exon_in_tx_count = rowSums(overlaps))
+  config_counts = dplyr::group_by(config_df, sharing_config) %>%
+    dplyr::summarise(n_exons_shared = length(sharing_config), n_transcripts_sharing = exon_in_tx_count[[1]]) %>%
+    dplyr::arrange(-n_exons_shared, -n_transcripts_sharing) %>%
+    dplyr::filter(n_transcripts_sharing > 1)
+  
+  #Extract transcripts
+  if(nrow(config_counts) == 1){
+    grp_1_ids = names(which(unique_conf[config_counts$sharing_config[[1]],] == 1))
+    return(list(grp_1 = granges_list[grp_1_ids]), grp_2 = NULL)
+  } else if(nrow(config_counts) >= 2){
+    grp_1_ids = names(which(unique_conf[config_counts$sharing_config[[1]],] == 1))
+    grp_2_ids = names(which(unique_conf[config_counts$sharing_config[[2]],] == 1))
+    return(list(grp_1 = granges_list[grp_1_ids], grp_2 = granges_list[grp_2_ids]))
+  } else {
+    return(list(grp_1 = NULL, grp_2 = NULL))
+  }
 }
