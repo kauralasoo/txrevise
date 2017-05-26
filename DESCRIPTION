@@ -13,7 +13,6 @@ Imports:
     grid,
     ggplot2,
     dplyr,
-    igraph
 License: What license is it under?
 LazyData: true
 Roxygen: list(wrap = FALSE)

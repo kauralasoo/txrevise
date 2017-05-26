@@ -61,18 +61,6 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
   return(group_list)
 }
 
-findTranscriptCliques <- function(granges_list){
-  tx_names = names(granges_list)
-  
-  #Construct a graph
-  edges = findOverlaps(granges_list) %>% as.data.frame() %>% 
-    dplyr::filter(queryHits != subjectHits) %>% as.matrix() %>% t() %>% as.vector()
-  tx_overlap_graph = igraph::graph(edges, directed = FALSE)
-  tx_cliques = igraph::max_cliques(tx_overlap_graph)
-  clique_list = lapply(tx_cliques, function(x){tx_names[as.vector(x)]}) %>% rev()
-  return(clique_list)
-}
-
 extractExonsByType <- function(granges, type){
   #From a indentifyAddedRemovedRegions object extract changes by the part of the transcript that is affectes
   
