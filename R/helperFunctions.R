@@ -215,7 +215,7 @@ revisedGffToGrangesList <- function(revised_gff){
     dplyr::filter(type == "exon") %>% 
     dplyr::transmute(seqnames, start, end, strand, transcript_id = unlist(Parent)) %>%
     dplyr::group_by(transcript_id) %>%
-    purrr::by_slice(~dataFrameToGRanges(.))
+    purrrlyr::by_slice(~dataFrameToGRanges(.))
   granges_list = setNames(revised_df$.out, revised_df$transcript_id)
   return(granges_list)
 }
