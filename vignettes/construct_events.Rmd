@@ -49,16 +49,16 @@ wiggleplotr::plotTranscripts(gene_data_ext$exons, gene_data_ext$cdss, plotting_a
 ## Identifying groups of overlapping transcripts
 Before we can split transcripts into events, we need to identify groups transcripts that all share exons. IRF5 has three exons that are shared between all of the (extended) transcripts and we could apply splitting algorithm on all of them jointly. However, some genes do not have any exons that are shared between all transcripts. In that case, it might be prefential to choose the largest subset of transcripts that share the most exons. Furthermore, even in the case of IRF5, one transcript is much shorter than others (ENST00000613821) and excluding that one might lead to better splitting of transcripts into events where internal exons are quantifed independently from 3' UTRs. The identifyTranscriptGroups function is designed to solve these issues. In the case of IRF5, it produces the following two groups of transcripts.
 
-### Group 1
-```{r, fig.width=5, fig.height=4}
+### Group 1 (all transcripts except ENST00000613821)
+```{r, fig.width=6, fig.height=6}
 transcript_groups = identifyTranscriptGroups(gene_data_ext$exons)
 wiggleplotr::plotTranscripts(transcript_groups$grp_1, rescale_introns = TRUE)
 
 ```
 
-### Group 2
-```{r, fig.width=5, fig.height=4}
-wiggleplotr::plotTranscripts(transcript_groups$grp_1, rescale_introns = TRUE)
+### Group 2 (all transcripts)
+```{r, fig.width=6, fig.height=6}
+wiggleplotr::plotTranscripts(transcript_groups$grp_2, rescale_introns = TRUE)
 ```
 
 ## Constructing alternative transcription events
