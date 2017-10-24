@@ -3,8 +3,8 @@ Title: Extend and revise transcript annotatons.
 Version: 0.1
 Authors.R: "Kaur Alasoo <kaur.alasoo@gmail.com> [aut, cre]"
 Description: txrevise extends truncated transcript 
-annotations and splits them into idependent transcript starts, 
-middle sections and transcript ends.
+	annotations and splits them into independent transcript starts, 
+	middle sections and transcript ends.
 Depends: 
     R (>= 3.0.2)
 Imports: 
