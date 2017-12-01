@@ -60,7 +60,7 @@ extendSingleTranscript <- function(tx_id, longest_tx_id, direction, exons, max_e
   if(length(findOverlaps(tx_exons, longest_tx_exons)) == 0){
     extend = FALSE
   } else{
-    diff = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, longest_tx_id, exons[c(tx_id, longest_tx_id)])
+    diff = indentifyAddedRemovedRegions(tx_id, longest_tx_id, exons[c(tx_id, longest_tx_id)])
 
     #Identify potential unique exon in the truncated end and set a flag
     tx_spec_exons = diff[[tx_id]]
