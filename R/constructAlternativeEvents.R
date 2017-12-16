@@ -34,7 +34,7 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
       #Identify all changes between transcripts and chared exons
       changes_list = list()
       for(tx_id in names(tx_group)){
-        tx_changes = reviseAnnotations::indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
+        tx_changes = indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
         changes_list[[tx_id]] = tx_changes
       }
       

@@ -1,5 +1,5 @@
 ---
-title: "Using reviseAnnotations to construct alternative transcription events"
+title: "Using txrevise to construct alternative transcription events"
 author: "Kaur Alasoo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -13,7 +13,7 @@ vignette: >
 suppressMessages(library("devtools"))
 suppressMessages(library("dplyr"))
 suppressMessages(library("wiggleplotr"))
-suppressMessages(load_all("../../reviseAnnotations/"))
+suppressMessages(load_all("../../txrevise/"))
 ```
 
 ## Import data form disk
@@ -41,8 +41,8 @@ knitr::kable(missing_ends)
 We can extend the transcripts with missing ends until the longest transcript of the gene.
 
 ```{r, fig.width=6, fig.height=6}
-gene_extended_tx = reviseAnnotations::extendTranscriptsPerGene(IRF5_data$metadata, IRF5_data$exons, IRF5_data$cdss)
-gene_data_ext = reviseAnnotations::replaceExtendedTranscripts(IRF5_data, gene_extended_tx)
+gene_extended_tx = txrevise::extendTranscriptsPerGene(IRF5_data$metadata, IRF5_data$exons, IRF5_data$cdss)
+gene_data_ext = txrevise::replaceExtendedTranscripts(IRF5_data, gene_extended_tx)
 wiggleplotr::plotTranscripts(gene_data_ext$exons, gene_data_ext$cdss, plotting_annotations, rescale_introns = TRUE)
 ```
 
@@ -51,7 +51,7 @@ Before we can split transcripts into events, we need to identify groups transcri
 
 ### Group 1 (all transcripts except ENST00000613821)
 ```{r, fig.width=6, fig.height=6}
-transcript_groups = identifyTranscriptGroups(gene_data_ext$exons)
+transcript_groups = txrevise::identifyTranscriptGroups(gene_data_ext$exons)
 wiggleplotr::plotTranscripts(transcript_groups$grp_1, rescale_introns = TRUE)
 
 ```
@@ -65,7 +65,7 @@ wiggleplotr::plotTranscripts(transcript_groups$grp_2, rescale_introns = TRUE)
 Finally, we can used the extended transcripts to construct alternative transcription events. This is done separately for two largest group of overlapping transcripts. The groups are chosen so that all transcripts in a group share largest possible number of exons.
 
 ```{r}
-alt_events = constructAlternativeEvents(gene_data_ext$exons, "ENSG00000128604")
+alt_events = txrevise::constructAlternativeEvents(gene_data_ext$exons, "ENSG00000128604")
 ```
 
 ### First set of overlapping transcripts
