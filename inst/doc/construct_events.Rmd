@@ -1,0 +1,103 @@
+---
+title: "Using txrevise to construct alternative transcription events"
+author: "Kaur Alasoo"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo=FALSE}
+suppressMessages(library("devtools"))
+suppressMessages(library("dplyr"))
+suppressMessages(library("wiggleplotr"))
+suppressMessages(load_all("../../txrevise/"))
+```
+
+## Import data form disk
+```{r}
+IRF5_data = readRDS("../data/IRF5.rds")
+plotting_annotations = dplyr::select(IRF5_data$metadata, ensembl_transcript_id, ensembl_gene_id, external_gene_name, strand) %>% 
+  dplyr::rename(transcript_id = ensembl_transcript_id, gene_id = ensembl_gene_id, gene_name = external_gene_name)
+knitr::kable(plotting_annotations)
+```
+
+## Extending truncated transcripts
+Once we have loaded the data, we can make a plot of the initial transcripts. For this we need the plotTranscripts function form the wiggleplotr package.
+```{r,fig.width=6, fig.height=6}
+wiggleplotr::plotTranscripts(IRF5_data$exons, IRF5_data$cdss, plotting_annotations, rescale_introns = TRUE)
+
+```
+
+There appear to be multiple short transcripts that do not overlap with each other. However, some of them are marked in Ensembl to have either missing 5' ends, missing 3' ends or both. Furthermore, transcripts with biotypes "nonsense_mediated_decay", "processed_transcript", "retained_intron" are usually also truncated although they are not marked as such in Ensembl.
+
+```{r}
+missing_ends = dplyr::select(IRF5_data$metadata, ensembl_transcript_id, mRNA_start_NF, mRNA_end_NF, cds_start_NF, cds_end_NF)
+knitr::kable(missing_ends)
+```
+
+We can extend the transcripts with missing ends until the longest transcript of the gene.
+
+```{r, fig.width=6, fig.height=6}
+gene_extended_tx = txrevise::extendTranscriptsPerGene(IRF5_data$metadata, IRF5_data$exons, IRF5_data$cdss)
+gene_data_ext = txrevise::replaceExtendedTranscripts(IRF5_data, gene_extended_tx)
+wiggleplotr::plotTranscripts(gene_data_ext$exons, gene_data_ext$cdss, plotting_annotations, rescale_introns = TRUE)
+```
+
+## Identifying groups of overlapping transcripts
+Before we can split transcripts into events, we need to identify groups transcripts that all share exons. IRF5 has three exons that are shared between all of the (extended) transcripts and we could apply splitting algorithm on all of them jointly. However, some genes do not have any exons that are shared between all transcripts. In that case, it might be prefential to choose the largest subset of transcripts that share the most exons. Furthermore, even in the case of IRF5, one transcript is much shorter than others (ENST00000613821) and excluding that one might lead to better splitting of transcripts into events where internal exons are quantifed independently from 3' UTRs. The identifyTranscriptGroups function is designed to solve these issues. In the case of IRF5, it produces the following two groups of transcripts.
+
+### Group 1 (all transcripts except ENST00000613821)
+```{r, fig.width=6, fig.height=6}
+transcript_groups = txrevise::identifyTranscriptGroups(gene_data_ext$exons)
+wiggleplotr::plotTranscripts(transcript_groups$grp_1, rescale_introns = TRUE)
+
+```
+
+### Group 2 (all transcripts)
+```{r, fig.width=6, fig.height=6}
+wiggleplotr::plotTranscripts(transcript_groups$grp_2, rescale_introns = TRUE)
+```
+
+## Constructing alternative transcription events
+Finally, we can used the extended transcripts to construct alternative transcription events. This is done separately for two largest group of overlapping transcripts. The groups are chosen so that all transcripts in a group share largest possible number of exons.
+
+```{r}
+alt_events = txrevise::constructAlternativeEvents(gene_data_ext$exons, "ENSG00000128604")
+```
+
+### First set of overlapping transcripts
+Start events for the first group:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000128604.grp_1$upstream, transcript_annotations = plotting_annotations, rescale_introns = TRUE)
+```
+
+Middle events for the first group:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000128604.grp_1$contained, transcript_annotations = plotting_annotations, rescale_introns = TRUE)
+```
+
+End events for the first group:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000128604.grp_1$downstream, transcript_annotations = plotting_annotations, rescale_introns = TRUE)
+
+```
+
+### Second set of overlapping transcripts
+Upstream events for the second clique:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000128604.grp_2$upstream, transcript_annotations = plotting_annotations, rescale_introns = TRUE)
+```
+
+Upstream events for the second clique:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000128604.grp_2$contained, transcript_annotations = plotting_annotations, rescale_introns = TRUE)
+```
+
+Downstream events for the second group:
+```{r, fig.width=5, fig.height=4}
+wiggleplotr::plotTranscripts(alt_events$ENSG00000128604.grp_2$downstream, transcript_annotations = plotting_annotations, rescale_introns = TRUE)
+```
+
