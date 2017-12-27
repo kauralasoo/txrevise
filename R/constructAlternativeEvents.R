@@ -27,16 +27,8 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
     
     #Only porceed with the analysis in the clique if there are at least some shared exons
     if(length(shared_exons) > 0){
-      #Add shared exons to the exon list
-      exon_list = tx_group
-      exon_list[["INTERSECTION"]] = shared_exons
-      
-      #Identify all changes between transcripts and chared exons
-      changes_list = list()
-      for(tx_id in names(tx_group)){
-        tx_changes = indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
-        changes_list[[tx_id]] = tx_changes
-      }
+      #Identify all changes between transcripts and shared exons
+      changes_list = differenceFromShared(tx_group)
       
       #Identify all types of alternative events
       event_types = c("upstream", "downstream","contained")
@@ -203,5 +195,31 @@ identifyTranscriptGroups <- function(granges_list){
     return(list(grp_1 = granges_list[grp_1_ids], grp_2 = granges_list[grp_2_ids]))
   } else {
     return(list(grp_1 = NULL, grp_2 = NULL))
+  }
+}
+
+
+#Identify all changes between transcripts and shared exons
+differenceFromShared <- function(transcript_list){
+  #Identify shared exons
+  shared_exons = listIntersect(transcript_list)
+  
+  #Only proceed if there are at least some shared exons
+  if(length(shared_exons) > 0){
+    
+    #Add shared exons to the exon list
+    exon_list = transcript_list
+    exon_list[["INTERSECTION"]] = shared_exons
+    
+    #Identify all changes between transcripts and shared exons
+    changes_list = list()
+    for(tx_id in names(transcript_list)){
+      tx_changes = indentifyAddedRemovedRegions(tx_id, "INTERSECTION", exon_list)[[1]]
+      changes_list[[tx_id]] = tx_changes
+    }
+    return(changes_list)
+  } else{
+    warning("No exon is shared between all transcripts.")
+    return(NULL)
   }
 }
