@@ -39,7 +39,7 @@ addTranscriptAnnotations <- function(transcript_list, gene_id){
     metadata = values(tx)
     metadata$Parent = tx_name
     metadata$type = "exon"
-    metadata$source = "reviseAnnotations"
+    metadata$source = "txrevise"
     metadata$ID = paste("exon:", tx_name, ":", c(1:length(tx)), sep = "")
     values(tx) = metadata
 
@@ -77,7 +77,7 @@ makeGeneTranscriptFromExons <- function(exons, parent_id, make_gene = FALSE){
   strand = extractFeature(strand(exons))
   metadata = dplyr::data_frame(Parent = parent_id, 
                         type = type, 
-                        source = "reviseAnnotations", 
+                        source = "txrevise", 
                         ID = tx_id)
   
   #Create the GRanges obejct
