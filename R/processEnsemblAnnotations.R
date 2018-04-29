@@ -107,7 +107,7 @@ filterTranscriptMetadata <- function(transcript_metadata, complete_transcripts =
                   cds_end_NF = ifelse(transcript_biotype %in% incomplete_transcripts, 1, cds_end_NF)) %>% 
     dplyr::mutate(cds_start_end_NF = pmax(cds_start_NF, cds_end_NF)) %>%
     dplyr::mutate(is_good_reference = ifelse(cds_start_end_NF == 0, is_gencode_basic, 0)) %>%
-    reviseAnnotations::markLongestGencodeTranscript()
+    markLongestGencodeTranscript()
   
   return(filtered_metadata)
 }
