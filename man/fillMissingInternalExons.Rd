@@ -4,10 +4,13 @@
 \alias{fillMissingInternalExons}
 \title{Fill missing internal exons into alternative transcript start events}
 \usage{
-fillMissingInternalExons(transcripts)
+fillMissingInternalExons(transcripts, type)
 }
 \arguments{
 \item{transcripts}{list of GRanges objects containing alternative transcript starts}
+
+\item{type}{either 'start' or 'end' to indicate whether alternative internal exons 
+should be masked in promoter or 3'end events, respectively.}
 }
 \value{
 New list of alternative transcript starts where the missing exons have been filled in.

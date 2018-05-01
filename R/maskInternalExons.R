@@ -1,6 +1,8 @@
 #' Fill missing internal exons into alternative transcript start events
 #'
 #' @param transcripts list of GRanges objects containing alternative transcript starts
+#' @param type either 'start' or 'end' to indicate whether alternative internal exons 
+#' should be masked in promoter or 3'end events, respectively.
 #'
 #' @return New list of alternative transcript starts where the missing exons have been filled in.
 #' @author Kaur Alasoo
