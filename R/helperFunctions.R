@@ -66,38 +66,6 @@ classifySplicingTable <- function(splicing_table, annotations, cdss = NULL){
   return(classification)
 }
 
-constructEventMask <- function(upstream_res, contained_res, downstream_res, diff_matrix){
-  #Combine all upstream and downstream into a single mask to filter inital classification results
-  #TODO: This code does not work anymore after tidy implementation of classification code
-  
-  #All significant hits
-  significant_hits = unique(c(downstream_res$collapsed$gene_id, upstream_res$collapsed$gene_id, contained_res$collapsed$gene_id))
-  
-  #Make an empty mask
-  mask = diff_matrix
-  mask = mask[significant_hits,]
-  mask[,] = 0
-  
-  #Populate with ones where there is a significant event
-  mask[contained_res$collapsed$gene_id,"contained"] = 1
-  mask[upstream_res$collapsed$gene_id,"upstream"] = 1
-  mask[downstream_res$collapsed$gene_id,"downstream"] = 1
-  
-  return(mask)
-}
-
-applyEventMask <- function(classification_table, mask){
-  #Apply a mask from constructEventMask to result from applyClassifyDifference
-  #TODO: This code does not work anymore after tidy implementation of classification code
-  classification_table$transcribed$diff = classification_table$transcribed$diff[rownames(mask),]*sign(mask)
-  classification_table$transcribed$abs_diff = classification_table$transcribed$abs_diff[rownames(mask),]*sign(mask)
-  classification_table$coding$diff = classification_table$coding$diff[rownames(mask),]*sign(mask)
-  classification_table$coding$abs_diff = classification_table$coding$abs_diff[rownames(mask),]*sign(mask)
-  
-  return(classification_table)
-}
-
-
 #' Extract gene-specifc data from annotations data frame and exons/cdss lists.
 #' 
 #' @param gene_id Ensembl id of the gene.
