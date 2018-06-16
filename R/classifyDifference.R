@@ -1,4 +1,43 @@
 
+
+#' Calculate the total number of nucleotides that are different between two transcripts.
+#'
+#' @param diff_object Result object from the indentifyAddedRemovedRegions() function.
+#'
+#' @return Data frame of differences between two transcripts, stratified into upstream, contained and downstream parts.
+#' @export
+calculateBasepairDifference <- function(diff_object){
+  assertthat::assert_that(!is.null(diff_object))
+  
+  #Extract transcript names
+  tx_ids = names(diff_object)[1:2]
+  
+  #Concatenate diff Granges objects
+  diff_granges = c(diff_object[[1]], diff_object[[2]])
+  
+  if(length(diff_granges) >= 1){
+    #Calculate the length of differences in basepairs
+    diff_matrix = as.matrix(S4Vectors::elementMetadata(diff_granges))
+    bp_matrix = width(diff_granges)*diff_matrix
+    bp_vector = colSums(bp_matrix)
+    
+    #Make results data frame
+    results = dplyr::data_frame(tx1_id = tx_ids[1], tx2_id = tx_ids[2],
+                                upstream = bp_vector["upstream"],
+                                contained = bp_vector["contained"],
+                                downstream = bp_vector["downstream"])
+  }else{
+    results = dplyr::data_frame(tx1_id = tx_ids[1], tx2_id = tx_ids[2],
+                                upstream = 0,
+                                contained = 0,
+                                downstream = 0)
+  }
+  return(results)
+}
+
+
+
+
 classifyDifference <- function(tx1_id, tx2_id, annotations, cdss = NULL){
   #Compare two trancripts and decide where they differ.
   
