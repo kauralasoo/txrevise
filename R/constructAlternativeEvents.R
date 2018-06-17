@@ -188,7 +188,7 @@ identifyTranscriptGroups <- function(granges_list){
   #Extract transcripts
   if(nrow(config_counts) == 1){
     grp_1_ids = names(which(unique_conf[config_counts$sharing_config[[1]],] == 1))
-    return(list(grp_1 = granges_list[grp_1_ids]), grp_2 = NULL)
+    return(list(grp_1 = granges_list[grp_1_ids], grp_2 = NULL))
   } else if(nrow(config_counts) >= 2){
     grp_1_ids = names(which(unique_conf[config_counts$sharing_config[[1]],] == 1))
     grp_2_ids = names(which(unique_conf[config_counts$sharing_config[[2]],] == 1))
