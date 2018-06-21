@@ -115,14 +115,14 @@ constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cds
   print(gene_id)
   
   #Extract gene data from annotations
-  gene_data = reviseAnnotations::extractGeneData(gene_id, gene_metadata, exons, cdss)
+  gene_data = extractGeneData(gene_id, gene_metadata, exons, cdss)
   
   #Extend truncated transcripts until the longest transcript
-  gene_extended_tx = reviseAnnotations::extendTranscriptsPerGene(gene_data$metadata, gene_data$exons, gene_data$cdss)
-  gene_data_ext = reviseAnnotations::replaceExtendedTranscripts(gene_data, gene_extended_tx)
+  gene_extended_tx = extendTranscriptsPerGene(gene_data$metadata, gene_data$exons, gene_data$cdss)
+  gene_data_ext = replaceExtendedTranscripts(gene_data, gene_extended_tx)
   
   #Construct alternative events
-  alt_events = reviseAnnotations::constructAlternativeEvents(gene_data_ext$exons, gene_id)
+  alt_events = constructAlternativeEvents(gene_data_ext$exons, gene_id)
   return(alt_events)
 }
 

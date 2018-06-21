@@ -5,3 +5,6 @@ tests/data/Homo_sapiens.GRCh37.74.TranscriptDb.db
 *.DS_Store
 tests/testthat/.Rhistory
 .Rhistory
+.Rproj.user
+.Rbuildignore
+txrevise.Rproj
