@@ -5,7 +5,7 @@
 \title{Apply constructAlternativeEvents() to an gene_id and metadata objects. Extend truncated transcripts first.}
 \usage{
 constructAlternativeEventsWrapper(gene_id, gene_metadata, exons, cdss,
-  max_internal_diff = 10, max_start_end_diff = 25)
+  max_internal_diff = 10, max_start_end_diff = 25, fill_internal)
 }
 \arguments{
 \item{gene_id}{Focal gene id.}
@@ -18,7 +18,9 @@ constructAlternativeEventsWrapper(gene_id, gene_metadata, exons, cdss,
 
 \item{max_internal_diff}{maximal internal difference between two evets for them to be considered the same.}
 
-\item{max_start_end_diff}{maximal difference at the start and end of two events for them to be considered 
+\item{max_start_end_diff}{maximal difference at the start and end of two events for them to be considered}
+
+\item{fill_internal}{Fill internal exons for alternative promoter and 3'end events.
 the same.}
 }
 \value{

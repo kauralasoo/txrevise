@@ -116,25 +116,43 @@ mergeByMaxDifference <- function(granges_list, max_internal_diff = 10, max_start
 #' @param cdss List of annotated CDSs
 #' @param max_internal_diff maximal internal difference between two evets for them to be considered the same.
 #' @param max_start_end_diff maximal difference at the start and end of two events for them to be considered 
+#' @param fill_internal Fill internal exons for alternative promoter and 3'end events.
 #' the same.
 #'
 #' @return Three-level list. First level correspond the each set of overlapping transcripts, second 
 #' level contains lists of downstream, upstream and contained alternative transcription events.
 #' @export
-constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cdss, max_internal_diff = 10, max_start_end_diff = 25){
-  
-  #Print current gene_id
-  print(gene_id)
+constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cdss, max_internal_diff = 10, max_start_end_diff = 25, fill_internal){
   
   #Extract gene data from annotations
   gene_data = extractGeneData(gene_id, gene_metadata, exons, cdss)
   
   #Extend truncated transcripts until the longest transcript
+  print(paste0("Extend truncated transcripts for gene ", gene_id))
   gene_extended_tx = extendTranscriptsPerGene(gene_data$metadata, gene_data$exons, gene_data$cdss)
   gene_data_ext = replaceExtendedTranscripts(gene_data, gene_extended_tx)
   
   #Construct alternative events
+  print(paste0("Construct alternative events for gene ", gene_id))
   alt_events = constructAlternativeEvents(gene_data_ext$exons, gene_id, max_internal_diff, max_start_end_diff)
+  
+  #Fill alternative internal exons for promoter and 3'end events
+  if(fill_internal){
+    print(paste0("Fill internal exons for gene ", gene_id))
+    filled_events = list()
+    for(group in names(alt_events)){
+      selected_events = alt_events[[group]]
+      if ("upstream" %in% names(selected_events)){
+        selected_events$upstream = fillMissingInternalExons(selected_events$upstream, type = "start")
+      }
+      if("downstream" %in% names(selected_events)){
+        selected_events$downstream = fillMissingInternalExons(selected_events$downstream, type = "end")
+      }
+      filled_events[[group]] = selected_events
+    }
+    alt_events = filled_events
+  }
+  
   return(alt_events)
 }
 
