@@ -138,7 +138,8 @@ constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cds
   return(alt_events)
 }
 
-#Combine all alternative events into a single list with appropriate names
+#' Combine all alternative events into a single list with appropriate names
+#' @export
 flattenAlternativeEvents <- function(alt_events){
   flat_event_list = list()
   #Iterate through all events
@@ -159,6 +160,8 @@ flattenAlternativeEvents <- function(alt_events){
   return(flat_event_list)
 }
 
+#' Construct event metadata
+#' @export
 constructEventMetadata <- function(transcript_ids){
   event_metadata = data.frame(transcript_id = transcript_ids) %>% 
     tidyr::separate(transcript_id, c('ensembl_gene_id', 'grp_id', 'event_type','ensembl_transcript_id'), 
