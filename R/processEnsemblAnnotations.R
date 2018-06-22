@@ -50,7 +50,6 @@ importTranscriptMetadataFromGTF <- function(gtf_path, transcript_tags){
 #' ensembl_gene_id, ensembl_transcript_id, transcript_start, transcript_end, strand)
 #'
 #' @return Original metadata df with longest_start and longest_end columns added.
-#' @export
 markLongestGencodeTranscript <- function(gene_metadata){
   #Make sure that the data frame has all of the required columns
   assertthat::assert_that(assertthat::has_name(gene_metadata, "ensembl_gene_id"))
@@ -84,6 +83,7 @@ markLongestGencodeTranscript <- function(gene_metadata){
 #' @param incomplete_transcripts Biotypes of trnascripts whose start and end are likely to be missing.
 #'
 #' @return Filtered transcript metadata df.
+#' @export
 filterTranscriptMetadata <- function(transcript_metadata, complete_transcripts = c("protein_coding", "lincRNA"),
                                      incomplete_transcripts = c("nonsense_mediated_decay","processed_transcript","retained_intron")){
   
