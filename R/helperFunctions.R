@@ -187,3 +187,23 @@ revisedGffToGrangesList <- function(revised_gff){
   granges_list = setNames(revised_df$.out, revised_df$transcript_id)
   return(granges_list)
 }
+
+#' Split vector of n elements into batches
+#' 
+#' Given a total number of elements n and batch_size, contruct a vector of length n where
+# each element occurs at most batch_size times.
+#'
+#' @param n Length of the vector
+#' @param batch_size Size of each batch
+#'
+#' @return vector of integers where each integer occurs at most batch_size times.
+#' @export
+#'
+#' @examples
+#' splitIntoBatches(11,3)
+splitIntoBatches <- function(n, batch_size){
+  n_batches = ceiling(n/batch_size)
+  batch_ids = rep(seq(1:n_batches), each = batch_size)[1:n]
+  return(batch_ids)
+}
+
