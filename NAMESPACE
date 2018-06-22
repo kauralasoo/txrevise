@@ -3,6 +3,7 @@
 export(basesDifferent)
 export(calculateBasepairDifference)
 export(constructAlternativeEvents)
+export(constructAlternativeEventsWrapper)
 export(dataFrameToGRanges)
 export(extendTranscriptsPerGene)
 export(extractGeneData)

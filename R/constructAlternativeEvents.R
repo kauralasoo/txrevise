@@ -108,8 +108,20 @@ mergeByMaxDifference <- function(granges_list, max_internal_diff = 10, max_start
   return(new_list)
 }
 
-# Apply constructAlternativeEvents to gene_id and metadata objects
-constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cdss){
+#' Apply constructAlternativeEvents() to an gene_id and metadata objects. Extend truncated transcripts first.
+#'
+#' @param gene_id Focal gene id.
+#' @param gene_metadata Tibble containing gene metadata from the prepareAnnotations script.
+#' @param exons List of annotated exons
+#' @param cdss List of annotated CDSs
+#' @param max_internal_diff maximal internal difference between two evets for them to be considered the same.
+#' @param max_start_end_diff maximal difference at the start and end of two events for them to be considered 
+#' the same.
+#'
+#' @return Three-level list. First level correspond the each set of overlapping transcripts, second 
+#' level contains lists of downstream, upstream and contained alternative transcription events.
+#' @export
+constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cdss, max_internal_diff = 10, max_start_end_diff = 25){
   
   #Print current gene_id
   print(gene_id)
@@ -122,7 +134,7 @@ constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cds
   gene_data_ext = replaceExtendedTranscripts(gene_data, gene_extended_tx)
   
   #Construct alternative events
-  alt_events = constructAlternativeEvents(gene_data_ext$exons, gene_id)
+  alt_events = constructAlternativeEvents(gene_data_ext$exons, gene_id, max_internal_diff, max_start_end_diff)
   return(alt_events)
 }
 
