@@ -78,9 +78,4 @@ if (length(selected_gene_ids) > 0){
   if(length(failed_names) > 0){
     write.table(failed_names, error_file, row.names = FALSE, col.names = FALSE, quote = FALSE)
   }
-} else {
-  #Make empty output files
-  write.table(c(), grp1_file, quote = FALSE)
-  write.table(c(), grp2_file, quote = FALSE)
-  write.table(c(), error_file, quote = FALSE)
 }
