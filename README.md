@@ -6,9 +6,14 @@ This section contains step-by-step instruction for how to construct transcriptio
 ### Dependencies
 Make sure that you have R 3.5 installed together with the following packages:
 
+ - optparse
  - dplyr
  - GenomicFeatures
- - 
+ - purrr
+ - rtracklayer
+ - txrevise
+
+You can install _txrevise_ directly from GitHub us
 
 ### Step 1: Download the GTF file
 
@@ -20,6 +25,6 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1Mjg4ODg5NTcsLTE4MzMxODI4MzQsLT
-E1ODU4OTUwNDhdfQ==
+eyJoaXN0b3J5IjpbNzk2NzIxOTc2LC0xODMzMTgyODM0LC0xNT
+g1ODk1MDQ4XX0=
 -->
