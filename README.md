@@ -35,7 +35,7 @@ Next, we need to convert the transcript annotations (in GTF format) to a binary 
 
 ### Construct transcription events
 
-	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrvise_events  --fill TRUE
+	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -45,7 +45,7 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NjM2MDg2MTYsMTc4OTAwMDQ1MCwtMT
-kyMTg4MjU4NywxNDU5MzU3ODEzLC0yMDU0Mjg4ODcwLC0xODMz
-MTgyODM0LC0xNTg1ODk1MDQ4XX0=
+eyJoaXN0b3J5IjpbMTUwODE5NTgzNSwtMTQ2MzYwODYxNiwxNz
+g5MDAwNDUwLC0xOTIxODgyNTg3LDE0NTkzNTc4MTMsLTIwNTQy
+ODg4NzAsLTE4MzMxODI4MzQsLTE1ODU4OTUwNDhdfQ==
 -->
