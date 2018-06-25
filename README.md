@@ -24,7 +24,9 @@ First, you need to download the GTF file from the Ensembl website. For example, 
 	wget ftp://ftp.ensembl.org/pub/release-92/gtf/homo_sapiens/Homo_sapiens.GRCh38.92.gtf.gz
 
 ### Step 2: Extract tanscript tags from the GTF file
-Ensembl GTF file contains a tags field marking protein coding transcript that are truncated at 5' or 3' ends. Txrevise uses this information to extend truncated transcripts. Unfortunately, the `import` function from rtracklayer does not import the tags field correctly. Thus, we need to first extract the transcript tags manually using a custom Python script that comes with txrevise.
+Ensembl GTF file contains a tags field marking protein coding transcript that are truncated at 5' or 3' ends. Txrevise uses this information to extend truncated transcripts. Unfortunately, the `import` function from rtracklayer does not import the tags field correctly. Thus, we need to first extract the transcript tags manually using a custom Python 3 script that comes with txrevise.
+
+	python scripts/extractTranscriptTags.py --gtf Homo_sapiens.GRCh38.92.gtf.gz > Homo_sapiens.GRCh38.92.transcript_tags.txt
 
 
 
@@ -36,6 +38,6 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjg0OTU2MjksLTIwNTQyODg4NzAsLT
-E4MzMxODI4MzQsLTE1ODU4OTUwNDhdfQ==
+eyJoaXN0b3J5IjpbMTQ1OTM1NzgxMywtMjA1NDI4ODg3MCwtMT
+gzMzE4MjgzNCwtMTU4NTg5NTA0OF19
 -->
