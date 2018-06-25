@@ -45,7 +45,5 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUwODE5NTgzNSwtMTQ2MzYwODYxNiwxNz
-g5MDAwNDUwLC0xOTIxODgyNTg3LDE0NTkzNTc4MTMsLTIwNTQy
-ODg4NzAsLTE4MzMxODI4MzQsLTE1ODU4OTUwNDhdfQ==
+eyJoaXN0b3J5IjpbMTUwODE5NTgzNV19
 -->
