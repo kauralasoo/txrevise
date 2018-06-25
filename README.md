@@ -8,9 +8,9 @@ Make sure that you have R 3.5 installed together with the following packages:
 
  - optparse
  - dplyr
- - GenomicFeatures
  - purrr
  - rtracklayer
+ - GenomicFeatures
  - txrevise
 
 You can install _txrevise_ directly from GitHub using the following command:
@@ -19,6 +19,7 @@ You can install _txrevise_ directly from GitHub using the following command:
 	install_github("kauralasoo/txrevise")
 
 ### Step 1: Download the GTF file
+First, you need to download the GTF file from the Ensembl website. For example, if you want to use Enssembl
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -28,6 +29,6 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYzNjE4MTg2NiwtMTgzMzE4MjgzNCwtMT
-U4NTg5NTA0OF19
+eyJoaXN0b3J5IjpbNDkzNDkzNzUwLC0xODMzMTgyODM0LC0xNT
+g1ODk1MDQ4XX0=
 -->
