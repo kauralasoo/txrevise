@@ -28,7 +28,8 @@ Ensembl GTF file contains a tags field marking protein coding transcript that ar
 
 	python scripts/extractTranscriptTags.py --gtf Homo_sapiens.GRCh38.92.gtf.gz > Homo_sapiens.GRCh38.92.transcript_tags.txt
 
-
+### Prepare transcript annotations for event construction
+Next, we need to convert the transcript annotations (in GTF format) to a binary representation that c
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -38,6 +39,6 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ1OTM1NzgxMywtMjA1NDI4ODg3MCwtMT
-gzMzE4MjgzNCwtMTU4NTg5NTA0OF19
+eyJoaXN0b3J5IjpbMTAxNTM4NTUzMSwxNDU5MzU3ODEzLC0yMD
+U0Mjg4ODcwLC0xODMzMTgyODM0LC0xNTg1ODk1MDQ4XX0=
 -->
