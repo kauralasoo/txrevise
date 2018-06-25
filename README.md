@@ -19,7 +19,11 @@ You can install _txrevise_ directly from GitHub using the following command:
 	install_github("kauralasoo/txrevise")
 
 ### Step 1: Download the GTF file
-First, you need to download the GTF file from the Ensembl website. For example, if you want to use Enssembl
+First, you need to download the GTF file from the Ensembl website. For example, if you want to use Ensembl version 92, you should download the following file:
+
+	wget ftp://ftp.ensembl.org/pub/release-92/gtf/homo_sapiens/Homo_sapiens.GRCh38.92.gtf.gz
+
+## Ste
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -29,6 +33,6 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDkzNDkzNzUwLC0xODMzMTgyODM0LC0xNT
-g1ODk1MDQ4XX0=
+eyJoaXN0b3J5IjpbLTE5MTY4NjU0NDksLTE4MzMxODI4MzQsLT
+E1ODU4OTUwNDhdfQ==
 -->
