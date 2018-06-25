@@ -2,7 +2,8 @@
 _txrevise_ R package provides utilites to pre-process Ensembl transcript annotations to quantify differences in transcript strucuture (alternative promoters, alternative splicing, alternative poly-adenylation) either between experimental conditions or genotypes (e.g. for transcript usage quntitative trait loci (tuQTL) mapping). 
 
 ## Constructing transcription events
-This section contains step-by-step instruction 
+This section contains step-by-step instruction for how to construct transcriptional events based from Ensembl transcrtipt annotations.
+### Step 1: Download the GTF file
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -12,5 +13,5 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUxNDgzMzU5NCwtMTU4NTg5NTA0OF19
+eyJoaXN0b3J5IjpbMjE0MDI2MzMwNCwtMTU4NTg5NTA0OF19
 -->
