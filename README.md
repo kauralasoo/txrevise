@@ -39,7 +39,7 @@ Finally, we can use the `constructEvents.R` script to construct alternative tran
 	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
 
 ### Step 5: Merging output files
-Each run of constructEvents.R produces up to six output files: alternative promoter, internal exon and 3' end events (labele
+Each run of constructEvents.R produces up to six output files: alternative promoter, internal exon and 3' end events (labeled as upstream, contained and downstream) for two possible sets of shared exons. See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) 
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -49,7 +49,7 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzOTg3OTU0MzcsMTA0OTc3NjI2MCwtMT
-QwNzEyNzcxNSwxNjUzMzE5MzY1LC0xNjU1MDQwNDM4LC04ODQy
-Mzg2MzMsLTIwMDM0MDU2MzksMTUwODE5NTgzNV19
+eyJoaXN0b3J5IjpbLTE3MTkwNDE3OTMsLTEzOTg3OTU0MzcsLT
+E0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMTY1NTA0MDQzOCwtODg0
+MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgxOTU4MzVdfQ==
 -->
