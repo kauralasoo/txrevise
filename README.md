@@ -34,7 +34,7 @@ Next, we need to convert the transcript annotations (in GTF format) to a binary 
 	Rscript scripts/prepareAnnotations.R --gtf Homo_sapiens.GRCh38.92.gtf.gz --tags Homo_sapiens.GRCh38.92.transcript_tags.txt --out Homo_sapiens.GRCh38.92.txrevise_annotations.rds
 
 ### Step 4: Construct transcription events
-Finally, we can use the constructEvents.R script to construct alternative transcription events. SInc
+Finally, we can use the constructEvents.R script to construct alternative transcription events. Since 
 	
 	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
 
@@ -46,5 +46,6 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAzMDQ3OTAwMywxNTA4MTk1ODM1XX0=
+eyJoaXN0b3J5IjpbLTc5MjU3ODQ5NiwyMDMwNDc5MDAzLDE1MD
+gxOTU4MzVdfQ==
 -->
