@@ -34,9 +34,12 @@ Next, we need to convert the transcript annotations (in GTF format) to a binary 
 	Rscript scripts/prepareAnnotations.R --gtf Homo_sapiens.GRCh38.92.gtf.gz --tags Homo_sapiens.GRCh38.92.transcript_tags.txt --out Homo_sapiens.GRCh38.92.txrevise_annotations.rds
 
 ### Step 4: Construct transcription events
-Finally, we can use the `constructEvents.R` script to construct alternative transcription events. Since the implementation of the various algorithms in txrevise have not been optimised for efficiency, processing the full Ensembl GTF file can take several days. However, different genes can trivially processed in parallel. To simplify parallel execution, `constructEvents.R` has the `--batch` option that takes as an input two integers separated by a space. For example, '1 200' would mean that all genes will be split into 200 batches and and only genes in the first batch will be processed. To process all genes, you simply need to iterate from '1 200' to '200 200'. 
+Finally, we can use the `constructEvents.R` script to construct alternative transcription events. Since the implementation of the various algorithms in txrevise have not been optimised for efficiency, processing the full Ensembl GTF file can take several days. However, different genes can trivially processed in parallel. To simplify parallel execution, `constructEvents.R` has the `--batch` option that takes as an input two integers separated by a space. For example, '1 200' would mean that all genes are split into 200 batches and and only genes in the first are be processed. To process all genes, you simply need to iterate from '1 200' to '200 200'. 
 	
 	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
+
+### Step 5: Merging output files
+
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -46,6 +49,6 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcyNTg4MDg3MSwtMTY1NTA0MDQzOCwtOD
+eyJoaXN0b3J5IjpbMTY1MzMxOTM2NSwtMTY1NTA0MDQzOCwtOD
 g0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgxOTU4MzVdfQ==
 -->
