@@ -39,16 +39,16 @@ Finally, we can use the `constructEvents.R` script to construct alternative tran
 	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
 
 ### Step 5: Merging output files
-Each run of constructEvents.R produces up to six output files: alternative promoter, internal exon and 3' end events (labeled as upstream, contained and downstream) for two possible sets of shared exons. See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for more details on how the events are constructed.
+Each run of `constructEvents.R` produces up to six output files: alternative promoter, internal exon and 3' end events (labeled as upstream, contained and downstream) for two possible sets of shared exons. See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for more details on how the events are constructed.
 
 ## Pre-computed transcript annotations
-We previously made pre-computed sets of transcription events available here, but these are now outdated and we strongly recommend to construct new events using the 
+We previously made pre-computed sets of transcription events available here, but these are now outdated and we strongly recommend to construct new events using the instructions above.
 Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. Thus, to make it easier to get started, we have pre-computed alternatve transcription events in the GFF3 format for both GRCh37 and GRCh38 reference genomes:
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY0MTkzNjM5OSwtMjA5MDIxMDc2OCw3NT
-YyNTA3MCwtMTM1NDIyNDUwLC0xNDA3MTI3NzE1LDE2NTMzMTkz
-NjUsLTE2NTUwNDA0MzgsLTg4NDIzODYzMywtMjAwMzQwNTYzOS
-wxNTA4MTk1ODM1XX0=
+eyJoaXN0b3J5IjpbNjg3NjQwNTY5LDE2NDE5MzYzOTksNzU2Mj
+UwNzAsLTEzNTQyMjQ1MCwtMTQwNzEyNzcxNSwxNjUzMzE5MzY1
+LC0xNjU1MDQwNDM4LC04ODQyMzg2MzMsLTIwMDM0MDU2MzksMT
+UwODE5NTgzNV19
 -->
