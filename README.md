@@ -41,7 +41,7 @@ Finally, we can use the `constructEvents.R` script to construct alternative tran
 ### Step 5: Merging output files
 Each run of `constructEvents.R` produces up to six output files: alternative promoter, internal exon and 3' end events (labeled as upstream, contained and downstream) for two possible sets of shared exons (grp_1 and grp_2). See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for more details on how the events are constructed.
 
-To be able to 
+To be able to use these events with transcript quantification software such as Salmon
 
 ## Pre-computed transcript annotations
 Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. Thus, to make it easier to get started, we have pre-computed alternatve transcription events in the GFF3 format for both GRCh37 and GRCh38 reference genomes:
@@ -54,7 +54,7 @@ We previously made pre-computed sets of transcription events available here, but
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1OTExMzk1NjEsLTQwNzc3MzA1MCwxNj
+eyJoaXN0b3J5IjpbMTU1NDYyOTIyMSwtMTU5MTEzOTU2MSwxNj
 QxOTM2Mzk5LDc1NjI1MDcwLC0xMzU0MjI0NTAsLTE0MDcxMjc3
 MTUsMTY1MzMxOTM2NSwtMTY1NTA0MDQzOCwtODg0MjM4NjMzLC
 0yMDAzNDA1NjM5LDE1MDgxOTU4MzVdfQ==
