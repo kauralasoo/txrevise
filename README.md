@@ -43,14 +43,14 @@ Each run of `constructEvents.R` produces up to six output files: alternative pro
 
 ## Pre-computed transcript annotations
 Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. Thus, to make it easier to get started, we have pre-computed alternatve transcription events in the GFF3 format for both GRCh37 and GRCh38 reference genomes:
-##
+### C
 ### Deprecated transcription events
 We previously made pre-computed sets of transcription events available here, but these are now outdated and we strongly recommend to construct new events using the instructions above.
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEwMjI1MDM4MiwxNjQxOTM2Mzk5LDc1Nj
-I1MDcwLC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2
-NSwtMTY1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LD
-E1MDgxOTU4MzVdfQ==
+eyJoaXN0b3J5IjpbLTQwNzc3MzA1MCwyMTAyMjUwMzgyLDE2ND
+E5MzYzOTksNzU2MjUwNzAsLTEzNTQyMjQ1MCwtMTQwNzEyNzcx
+NSwxNjUzMzE5MzY1LC0xNjU1MDQwNDM4LC04ODQyMzg2MzMsLT
+IwMDM0MDU2MzksMTUwODE5NTgzNV19
 -->
