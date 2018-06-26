@@ -39,7 +39,7 @@ Finally, we can use the `constructEvents.R` script to construct alternative tran
 	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
 
 ### Step 5: Merging output files
-
+Each run constructEvents.R
 
 ## Getting started
 See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for examples of the basic functionality.
@@ -49,6 +49,7 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY1MzMxOTM2NSwtMTY1NTA0MDQzOCwtOD
-g0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgxOTU4MzVdfQ==
+eyJoaXN0b3J5IjpbLTYzODQ2MTQ2NywxNjUzMzE5MzY1LC0xNj
+U1MDQwNDM4LC04ODQyMzg2MzMsLTIwMDM0MDU2MzksMTUwODE5
+NTgzNV19
 -->
