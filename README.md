@@ -38,7 +38,7 @@ Finally, we can use the `constructEvents.R` script to construct alternative tran
 	
 	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
 
-### Step 5: Merging output files
+### Step 5: Merge output files
 Each run of `constructEvents.R` produces up to six output files: alternative promoter, internal exon and 3' end events (labeled as upstream, contained and downstream) for two possible sets of shared exons (grp_1 and grp_2). See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for more details on how the events are constructed.
 
 To be able to use these events with transcript quantification software such as Salmon or kallisto, we first need to merge all files from different batches:
@@ -65,8 +65,8 @@ We previously made pre-computed sets of transcription events available here, but
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQyOTc4OTk3MiwxNTU0NjI5MjIxLDE2ND
-E5MzYzOTksNzU2MjUwNzAsLTEzNTQyMjQ1MCwtMTQwNzEyNzcx
-NSwxNjUzMzE5MzY1LC0xNjU1MDQwNDM4LC04ODQyMzg2MzMsLT
-IwMDM0MDU2MzksMTUwODE5NTgzNV19
+eyJoaXN0b3J5IjpbMjAwMTkxNTUwNSwxNDI5Nzg5OTcyLDE1NT
+Q2MjkyMjEsMTY0MTkzNjM5OSw3NTYyNTA3MCwtMTM1NDIyNDUw
+LC0xNDA3MTI3NzE1LDE2NTMzMTkzNjUsLTE2NTUwNDA0MzgsLT
+g4NDIzODYzMywtMjAwMzQwNTYzOSwxNTA4MTk1ODM1XX0=
 -->
