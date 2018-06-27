@@ -69,6 +69,8 @@ if (length(selected_gene_ids) > 0){
       if(nrow(selected_events) > 0){
         gff_granges = txrevise::transcriptsToAnnotations(alt_events[selected_events$transcript_id], event_metadata)
         rtracklayer::export.gff3(gff_granges, out_file)
+      } else { #Write empty output files
+        file.create(out_file)
       }
     }
   }

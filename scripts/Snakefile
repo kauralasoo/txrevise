@@ -47,7 +47,7 @@ rule construct_events:
 		outdir = "processed/{annotation}"
 	threads: 1
 	resources:
-		mem = 1000
+		mem = 3000
 	shell:
 		"""
 		module load R-3.4.1
