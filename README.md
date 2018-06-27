@@ -6,9 +6,10 @@ This section contains step-by-step instruction for how to construct transcriptio
 ### Dependencies
 Make sure that you have R 3.5 installed together with the following packages:
 
- - optparse
- - dplyr
- - purrr
+ - [optparse](https://cran.r-project.org/package=optparse)
+ - [dplyr](https://cran.r-project.org/package=dplyr)
+ - [purrr](https://cran.r-project.org/package=purrr)
+ - [devtools](https://cran.r-project.org/package=devtools)
  - [rtracklayer](https://bioconductor.org/packages/rtracklayer/)
  - [GenomicFeatures](https://bioconductor.org/packages/GenomicFeatures/)
  - txrevise
@@ -65,7 +66,7 @@ We previously made pre-computed sets of transcription events available here, but
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTczNzQwOTQ4OCwyMDAxOTE1NTA1LDE0Mj
+eyJoaXN0b3J5IjpbMTEyNjAwNjg2NSwyMDAxOTE1NTA1LDE0Mj
 k3ODk5NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1NjI1MDcw
 LC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMT
 Y1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgx
