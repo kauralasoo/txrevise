@@ -52,7 +52,7 @@ To be able to use these events with transcript quantification software such as [
 	cat txrevise_events/txrevise.grp_2.downstream.* | grep -v "^#" > txrevise.grp_2.downstream.gff3
 
 ### Step 6: Quantify event expression
-The GFF3 files constructed by _txrevise_ can be used with any transcript quantification algorithm (e.g. Salmon or [kallisto](https://pachterlab.github.io/kallisto/)). **Importantly, since the promoter, internal exon and 3' end events constructed by txrevise share some of the same exons, they should always quantified independently**. For example, if you have six GFF3 files from txrevise (txrevise.grp_1.upstream.gff3, txrevise.grp_1.contained.gff3, txrevise.grp_1.downstream.gff3, txrevise.grp_2.upstream.gff3, txrevise.grp_2.contained.gff3, txrevise.grp_2.downstream.gff3), you should also run the quantification algorithm six times with each of the GFF3 file independently.
+The GFF3 files constructed by _txrevise_ can be used with any transcript quantification algorithm (e.g. [Salmon](http://salmon.readthedocs.io/en/latest/) or [kallisto](https://pachterlab.github.io/kallisto/)). **Importantly, since the promoter, internal exon and 3' end events constructed by txrevise share some of the same exons, they should always quantified independently**. For example, if you have six GFF3 files from txrevise (txrevise.grp_1.upstream.gff3, txrevise.grp_1.contained.gff3, txrevise.grp_1.downstream.gff3, txrevise.grp_2.upstream.gff3, txrevise.grp_2.contained.gff3, txrevise.grp_2.downstream.gff3), you should also run the quantification algorithm six times with each of the GFF3 file independently.
 
 ## Pre-computed transcript annotations
 Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. Thus, to make it easier to get started, we have pre-computed alternatve transcription events in the GFF3 format for both GRCh37 and GRCh38 reference genomes:
@@ -65,9 +65,9 @@ We previously made pre-computed sets of transcription events available here, but
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQyOTMwMTgzMywyMDAxOTE1NTA1LDE0Mj
-k3ODk5NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1NjI1MDcw
-LC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMT
-Y1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgx
-OTU4MzVdfQ==
+eyJoaXN0b3J5IjpbLTEwOTg3NjEzMDUsMjAwMTkxNTUwNSwxND
+I5Nzg5OTcyLDE1NTQ2MjkyMjEsMTY0MTkzNjM5OSw3NTYyNTA3
+MCwtMTM1NDIyNDUwLC0xNDA3MTI3NzE1LDE2NTMzMTkzNjUsLT
+E2NTUwNDA0MzgsLTg4NDIzODYzMywtMjAwMzQwNTYzOSwxNTA4
+MTk1ODM1XX0=
 -->
