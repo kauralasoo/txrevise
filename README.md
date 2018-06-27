@@ -9,8 +9,8 @@ Make sure that you have R 3.5 installed together with the following packages:
  - optparse
  - dplyr
  - purrr
- - rtracklayer
- - GenomicFeatures
+ - [rtracklayer](https://bioconductor.org/packages/rtracklayer/)
+ - [GenomicFeatures](https://bioconductor.org/packages/GenomicFeatures/)
  - txrevise
 
 You can install _txrevise_ directly from GitHub using the following command:
@@ -65,9 +65,9 @@ We previously made pre-computed sets of transcription events available here, but
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwOTg3NjEzMDUsMjAwMTkxNTUwNSwxND
-I5Nzg5OTcyLDE1NTQ2MjkyMjEsMTY0MTkzNjM5OSw3NTYyNTA3
-MCwtMTM1NDIyNDUwLC0xNDA3MTI3NzE1LDE2NTMzMTkzNjUsLT
-E2NTUwNDA0MzgsLTg4NDIzODYzMywtMjAwMzQwNTYzOSwxNTA4
-MTk1ODM1XX0=
+eyJoaXN0b3J5IjpbMTczNzQwOTQ4OCwyMDAxOTE1NTA1LDE0Mj
+k3ODk5NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1NjI1MDcw
+LC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMT
+Y1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgx
+OTU4MzVdfQ==
 -->
