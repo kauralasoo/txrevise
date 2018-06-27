@@ -24,7 +24,7 @@ rule prepare_annotations:
 		annot = "processed/{annotation}_txrevise_annotations.rds"
 	threads: 1
 	resources:
-		mem = 1000
+		mem = 6000
 	shell:
 		"""
 		module load R-3.4.1
@@ -47,7 +47,7 @@ rule construct_events:
 		outdir = "processed/{annotation}"
 	threads: 1
 	resources:
-		mem = 3000
+		mem = 4000
 	shell:
 		"""
 		module load R-3.4.1
