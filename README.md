@@ -2,7 +2,8 @@
 _txrevise_ R package provides utilites to pre-process Ensembl transcript annotations to quantify differences in transcript strucuture (alternative promoters, alternative splicing, alternative poly-adenylation) either between experimental conditions or genotypes (e.g. for transcript usage quntitative trait loci (tuQTL) mapping). 
 
 ## Constructing transcription events
-This section contains step-by-step instruction for how to construct transcriptional events based from Ensembl transcrtipt annotations. We have also written a [Snakefile](https://github.com/kauralasoo/txrevise/blob/master/scripts/Snakefile) for [snakemake](http://snakemake.readthedocs.io/en/stable/) that automates all of the steps and can be easily parallelised 
+This section contains step-by-step instruction for how to construct transcriptional events based from Ensembl transcrtipt annotations. We have also written a [Snakefile](https://github.com/kauralasoo/txrevise/blob/master/scripts/Snakefile) for [snakemake](http://snakemake.readthedocs.io/en/stable/) that automates all of the steps and can be easily parallelised on multiple cores or on a compute cluster. 
+
 ### Dependencies
 Make sure that you have R 3.5 installed together with the following packages:
 
@@ -66,9 +67,9 @@ We previously made pre-computed sets of transcription events available here, but
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI4MDY4MzMwMywxNjU2NTA0NTAzLDExMj
-YwMDY4NjUsMjAwMTkxNTUwNSwxNDI5Nzg5OTcyLDE1NTQ2Mjky
-MjEsMTY0MTkzNjM5OSw3NTYyNTA3MCwtMTM1NDIyNDUwLC0xND
-A3MTI3NzE1LDE2NTMzMTkzNjUsLTE2NTUwNDA0MzgsLTg4NDIz
-ODYzMywtMjAwMzQwNTYzOSwxNTA4MTk1ODM1XX0=
+eyJoaXN0b3J5IjpbMjYyMTExOTcwLDE2NTY1MDQ1MDMsMTEyNj
+AwNjg2NSwyMDAxOTE1NTA1LDE0Mjk3ODk5NzIsMTU1NDYyOTIy
+MSwxNjQxOTM2Mzk5LDc1NjI1MDcwLC0xMzU0MjI0NTAsLTE0MD
+cxMjc3MTUsMTY1MzMxOTM2NSwtMTY1NTA0MDQzOCwtODg0MjM4
+NjMzLC0yMDAzNDA1NjM5LDE1MDgxOTU4MzVdfQ==
 -->
