@@ -51,7 +51,7 @@ rule construct_events:
 	shell:
 		"""
 		module load R-3.4.1
-		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill TRUE
+		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]}
 		"""
 
 #Merge txrevise output files

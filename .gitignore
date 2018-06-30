@@ -8,3 +8,5 @@ tests/testthat/.Rhistory
 .Rproj.user
 .Rbuildignore
 txrevise.Rproj
+scripts/.snakemake
+scripts/processed
