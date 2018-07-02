@@ -80,4 +80,12 @@ if (length(selected_gene_ids) > 0){
   if(length(failed_names) > 0){
     write.table(failed_names, error_file, row.names = FALSE, col.names = FALSE, quote = FALSE)
   }
+} else {
+  #If there are now genes in the batch then write empty output files
+  for (group in c("grp_1", "grp_2")){
+    for (event in c("upstream", "downstream", "contained")){
+      out_file = file.path(out_dir, paste("txrevise",group, event, batch_id, "gff3", sep = "."))
+      file.create(out_file)
+    }
+  }
 }
