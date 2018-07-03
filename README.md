@@ -57,7 +57,17 @@ To be able to use these events with transcript quantification software such as [
 The GFF3 files constructed by _txrevise_ can be used with any transcript quantification algorithm (e.g. [Salmon](http://salmon.readthedocs.io/en/latest/) or [kallisto](https://pachterlab.github.io/kallisto/)). **Importantly, since the promoter, internal exon and 3' end events constructed by txrevise share some of the same exons, they should always quantified independently**. For example, if you have six GFF3 files from txrevise (txrevise.grp_1.upstream.gff3, txrevise.grp_1.contained.gff3, txrevise.grp_1.downstream.gff3, txrevise.grp_2.upstream.gff3, txrevise.grp_2.contained.gff3, txrevise.grp_2.downstream.gff3), you should also run the quantification algorithm six times with each of the GFF3 file independently.
 
 ## Pre-computed transcript annotations
-Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. Thus, to make it easier to get started, we have pre-computed alternatve transcription events in the GFF3 format for both GRCh37 and GRCh38 reference genomes:
+Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. Thus, to make it easier to get started, we have pre-computed alternatve transcription events in the GFF3 format for both GRCh37 and GRCh38 reference genomes.
+
+We have constructed two types of events. In the main event files we have masked the alternative internal exons in the promoter and 3' end events (labeled upstream and downstream). This ensures that we can reliably distinguish promoter usage and 3' end usage from alternative splicing, which are likely to be driven by distinct molecular mechanisms. The main annotation files are:
+
+-   Homo_sapiens.GRCh37.87.version_1.tar.gz
+-   [Homo_sapiens.GRCh38.92.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.version_1.tar.gz)
+
+We have also constructed an alternative set of "raw" annotation files where the alternative internal exons in promoter and 3' end events have not masked. This maximises QTL discovery, because we can now also detect splicing event near promoters and 3 ends, but it comes at the expense that we are no longer able to distinguish between different molecular mechanisms. The raw annotation files are:
+
+-   Homo_sapiens.GRCh37.87.raw_events.version_1.tar.gz
+-   Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz
 
 ### Current transcription events
 TODO
@@ -67,9 +77,10 @@ We previously made pre-computed sets of transcription events available here, but
 * [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
 * [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU3MzQ4ODE3OCwxNjU2NTA0NTAzLDExMj
-YwMDY4NjUsMjAwMTkxNTUwNSwxNDI5Nzg5OTcyLDE1NTQ2Mjky
-MjEsMTY0MTkzNjM5OSw3NTYyNTA3MCwtMTM1NDIyNDUwLC0xND
-A3MTI3NzE1LDE2NTMzMTkzNjUsLTE2NTUwNDA0MzgsLTg4NDIz
-ODYzMywtMjAwMzQwNTYzOSwxNTA4MTk1ODM1XX0=
+eyJoaXN0b3J5IjpbLTE0MTIzMzQ1MjIsLTU3MzQ4ODE3OCwxNj
+U2NTA0NTAzLDExMjYwMDY4NjUsMjAwMTkxNTUwNSwxNDI5Nzg5
+OTcyLDE1NTQ2MjkyMjEsMTY0MTkzNjM5OSw3NTYyNTA3MCwtMT
+M1NDIyNDUwLC0xNDA3MTI3NzE1LDE2NTMzMTkzNjUsLTE2NTUw
+NDA0MzgsLTg4NDIzODYzMywtMjAwMzQwNTYzOSwxNTA4MTk1OD
+M1XX0=
 -->
