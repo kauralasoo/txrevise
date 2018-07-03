@@ -43,7 +43,7 @@ Finally, we can use the `constructEvents.R` script to construct alternative tran
 ### Step 5: Merge output files
 Each run of `constructEvents.R` produces up to six output files: alternative promoter, internal exon and 3' end events (labeled as upstream, contained and downstream) for two possible sets of shared exons (grp_1 and grp_2). See the [vignette](http://htmlpreview.github.io/?https://github.com/kauralasoo/txrevise/blob/master/inst/doc/construct_events.html) for more details on how the events are constructed.
 
-To be able to use these events with transcript quantification software such as [Salmon](http://salmon.readthedocs.io/en/latest/) or [kallisto](https://pachterlab.github.io/kallisto/), we first need to merge all files from different batches. The `grep -v "^#"` command removes the comment lines from the beginning of each indi
+To be able to use these events with transcript quantification software such as [Salmon](http://salmon.readthedocs.io/en/latest/) or [kallisto](https://pachterlab.github.io/kallisto/), we first need to merge all files from different batches. The `grep -v "^#"` command removes the comment lines from the beginning of each individa
 
 	cat txrevise_events/txrevise.grp_1.upstream.* | grep -v "^#" > txrevise.grp_1.upstream.gff3
 	cat txrevise_events/txrevise.grp_1.contained.* | grep -v "^#" > txrevise.grp_1.contained.gff3
@@ -75,11 +75,11 @@ Many transcript expression quantification tools (e.g. Salmon or kallisto) do not
 	gffread -w <output.fa> -g <reference_genome.fa> <input.gff3>
 	
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMwNDc2NTc1NSwxNTkyMjg2MTUsMTA3Nz
-MwMzk0MCwtMTgwNTc5NzIxMiwxODE0ODA1MjI4LDg4MzA3MzMx
-OCwtNTczNDg4MTc4LDE2NTY1MDQ1MDMsMTEyNjAwNjg2NSwyMD
-AxOTE1NTA1LDE0Mjk3ODk5NzIsMTU1NDYyOTIyMSwxNjQxOTM2
-Mzk5LDc1NjI1MDcwLC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMT
-Y1MzMxOTM2NSwtMTY1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAz
-NDA1NjM5XX0=
+eyJoaXN0b3J5IjpbLTg2MzgwMzU3MywxMzA0NzY1NzU1LDE1OT
+IyODYxNSwxMDc3MzAzOTQwLC0xODA1Nzk3MjEyLDE4MTQ4MDUy
+MjgsODgzMDczMzE4LC01NzM0ODgxNzgsMTY1NjUwNDUwMywxMT
+I2MDA2ODY1LDIwMDE5MTU1MDUsMTQyOTc4OTk3MiwxNTU0NjI5
+MjIxLDE2NDE5MzYzOTksNzU2MjUwNzAsLTEzNTQyMjQ1MCwtMT
+QwNzEyNzcxNSwxNjUzMzE5MzY1LC0xNjU1MDQwNDM4LC04ODQy
+Mzg2MzNdfQ==
 -->
