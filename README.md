@@ -56,7 +56,7 @@ To be able to use these events with transcript quantification software such as [
 ### Step 6: Quantify event expression
 The GFF3 files constructed by _txrevise_ can be used with any transcript quantification algorithm (e.g. [Salmon](http://salmon.readthedocs.io/en/latest/) or [kallisto](https://pachterlab.github.io/kallisto/)). **Importantly, since the promoter, internal exon and 3' end events constructed by txrevise share some of the same exons, they should always quantified independently**. For example, if you have six GFF3 files from txrevise (txrevise.grp_1.upstream.gff3, txrevise.grp_1.contained.gff3, txrevise.grp_1.downstream.gff3, txrevise.grp_2.upstream.gff3, txrevise.grp_2.contained.gff3, txrevise.grp_2.downstream.gff3), you should also run the quantification algorithm six times with each of the GFF3 file independently.
 
-## Pre-computed transcript annotations
+## Pre-computed event annotations
 Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. Thus, to make it easier to get started, we have pre-computed alternatve transcription events in the GFF3 format for both GRCh37 and GRCh38 reference genomes.
 
 We have constructed two types of events. In the main event files we have masked the alternative internal exons in the promoter and 3' end events (labeled upstream and downstream). This ensures that we can reliably distinguish promoter usage and 3' end usage from alternative splicing, which are likely to be driven by distinct molecular mechanisms. The main annotation files are:
@@ -75,11 +75,11 @@ Many transcript expression quantification tools (e.g. Salmon or kallisto) do not
 	gffread -w <output.fa> -g <reference_genome.fa> <input.gff3>
 	
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgzMTc1NTk5NCwtODYzODAzNTczLDE1OT
-IyODYxNSwxMDc3MzAzOTQwLC0xODA1Nzk3MjEyLDE4MTQ4MDUy
-MjgsODgzMDczMzE4LC01NzM0ODgxNzgsMTY1NjUwNDUwMywxMT
-I2MDA2ODY1LDIwMDE5MTU1MDUsMTQyOTc4OTk3MiwxNTU0NjI5
-MjIxLDE2NDE5MzYzOTksNzU2MjUwNzAsLTEzNTQyMjQ1MCwtMT
-QwNzEyNzcxNSwxNjUzMzE5MzY1LC0xNjU1MDQwNDM4LC04ODQy
-Mzg2MzNdfQ==
+eyJoaXN0b3J5IjpbNTkyNTM4MTM4LC04MzE3NTU5OTQsLTg2Mz
+gwMzU3MywxNTkyMjg2MTUsMTA3NzMwMzk0MCwtMTgwNTc5NzIx
+MiwxODE0ODA1MjI4LDg4MzA3MzMxOCwtNTczNDg4MTc4LDE2NT
+Y1MDQ1MDMsMTEyNjAwNjg2NSwyMDAxOTE1NTA1LDE0Mjk3ODk5
+NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1NjI1MDcwLC0xMz
+U0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMTY1NTA0
+MDQzOF19
 -->
