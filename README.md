@@ -72,12 +72,12 @@ We have also constructed an alternative set of "raw" annotation files where the 
 ## Quantifying event expression
 Many transcript expression quantification tools (e.g. Salmon or kallisto) do not directly work with transcript annotations in GFF3 format and require the transcript sequences in FASTA format instead. The simplest way to convert GFF3 annotations into transcript (or event) sequences is to use the gffread tool that is part of the cufflinks package:
 
-	gffread -w <output.fa> -g <referemce {input}
+	gffread -w <output.fa> -g <reference {input}
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA0MzA2NjI5LDIwMjc0MDAwMCwxODE0OD
-A1MjI4LDg4MzA3MzMxOCwtNTczNDg4MTc4LDE2NTY1MDQ1MDMs
-MTEyNjAwNjg2NSwyMDAxOTE1NTA1LDE0Mjk3ODk5NzIsMTU1ND
-YyOTIyMSwxNjQxOTM2Mzk5LDc1NjI1MDcwLC0xMzU0MjI0NTAs
-LTE0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMTY1NTA0MDQzOCwtOD
-g0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgxOTU4MzVdfQ==
+eyJoaXN0b3J5IjpbLTE4MDU3OTcyMTIsMjA0MzA2NjI5LDE4MT
+Q4MDUyMjgsODgzMDczMzE4LC01NzM0ODgxNzgsMTY1NjUwNDUw
+MywxMTI2MDA2ODY1LDIwMDE5MTU1MDUsMTQyOTc4OTk3MiwxNT
+U0NjI5MjIxLDE2NDE5MzYzOTksNzU2MjUwNzAsLTEzNTQyMjQ1
+MCwtMTQwNzEyNzcxNSwxNjUzMzE5MzY1LC0xNjU1MDQwNDM4LC
+04ODQyMzg2MzMsLTIwMDM0MDU2MzksMTUwODE5NTgzNV19
 -->
