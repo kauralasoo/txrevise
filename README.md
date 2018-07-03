@@ -68,11 +68,14 @@ We have also constructed an alternative set of "raw" annotation files where the 
 
 -   [Homo_sapiens.GRCh37.87.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh37.87.raw_events.version_1.tar.gz)
 -   [Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz)
+
+## Quantifying event expression
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODgzMDczMzE4LC01NzM0ODgxNzgsMTY1Nj
-UwNDUwMywxMTI2MDA2ODY1LDIwMDE5MTU1MDUsMTQyOTc4OTk3
-MiwxNTU0NjI5MjIxLDE2NDE5MzYzOTksNzU2MjUwNzAsLTEzNT
-QyMjQ1MCwtMTQwNzEyNzcxNSwxNjUzMzE5MzY1LC0xNjU1MDQw
-NDM4LC04ODQyMzg2MzMsLTIwMDM0MDU2MzksMTUwODE5NTgzNV
-19
+eyJoaXN0b3J5IjpbNDk1MTEzOTk1LDg4MzA3MzMxOCwtNTczND
+g4MTc4LDE2NTY1MDQ1MDMsMTEyNjAwNjg2NSwyMDAxOTE1NTA1
+LDE0Mjk3ODk5NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1Nj
+I1MDcwLC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2
+NSwtMTY1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LD
+E1MDgxOTU4MzVdfQ==
 -->
