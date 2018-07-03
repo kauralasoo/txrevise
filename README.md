@@ -67,20 +67,12 @@ We have constructed two types of events. In the main event files we have masked 
 We have also constructed an alternative set of "raw" annotation files where the alternative internal exons in promoter and 3' end events have not masked. This maximises QTL discovery, because we can now also detect splicing event near promoters and 3 ends, but it comes at the expense that we are no longer able to distinguish between different molecular mechanisms. The raw annotation files are:
 
 -   [Homo_sapiens.GRCh37.87.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh37.87.raw_events.version_1.tar.gz)
--   Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz
-
-### Current transcription events
-TODO
-
-### Deprecated transcription events
-We previously made pre-computed sets of transcription events available here, but these are now outdated and we strongly recommend to construct new events using the instructions above.
-* [GRCh38 + Ensembl 87](https://zenodo.org/record/997492#.Wcqa3tMjHOQ)
-* [GRCh37(hg19) + Ensembl 90](https://zenodo.org/record/997251#.Wco2Q9MjHUJ)
+-   [Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTYzNDgwNjQ5NCwtNTczNDg4MTc4LDE2NT
-Y1MDQ1MDMsMTEyNjAwNjg2NSwyMDAxOTE1NTA1LDE0Mjk3ODk5
-NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1NjI1MDcwLC0xMz
-U0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMTY1NTA0
-MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgxOTU4Mz
-VdfQ==
+eyJoaXN0b3J5IjpbODgzMDczMzE4LC01NzM0ODgxNzgsMTY1Nj
+UwNDUwMywxMTI2MDA2ODY1LDIwMDE5MTU1MDUsMTQyOTc4OTk3
+MiwxNTU0NjI5MjIxLDE2NDE5MzYzOTksNzU2MjUwNzAsLTEzNT
+QyMjQ1MCwtMTQwNzEyNzcxNSwxNjUzMzE5MzY1LC0xNjU1MDQw
+NDM4LC04ODQyMzg2MzMsLTIwMDM0MDU2MzksMTUwODE5NTgzNV
+19
 -->
