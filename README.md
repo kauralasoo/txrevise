@@ -69,17 +69,17 @@ We have also constructed an alternative set of "raw" annotation files where the 
 -   [Homo_sapiens.GRCh37.87.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh37.87.raw_events.version_1.tar.gz)
 -   [Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz)
 
-## Converting event annotations to 
+## Quantifying event expression
 Many transcript expression quantification tools (e.g. Salmon or kallisto) do not directly work with transcript annotations in GFF3 format and require the transcript sequences in FASTA format instead. The simplest way to convert GFF3 annotations into transcript (or event) sequences is to use the `gffread` tool from the [cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) package:
 
 	gffread -w <output.fa> -g <reference_genome.fa> <input.gff3>
 	
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA3NzMwMzk0MCwtMTgwNTc5NzIxMiwxOD
-E0ODA1MjI4LDg4MzA3MzMxOCwtNTczNDg4MTc4LDE2NTY1MDQ1
-MDMsMTEyNjAwNjg2NSwyMDAxOTE1NTA1LDE0Mjk3ODk5NzIsMT
-U1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1NjI1MDcwLC0xMzU0MjI0
-NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2NSwtMTY1NTA0MDQzOC
-wtODg0MjM4NjMzLC0yMDAzNDA1NjM5LDE1MDgxOTU4MzVdfQ==
-
+eyJoaXN0b3J5IjpbMTU5MjI4NjE1LDEwNzczMDM5NDAsLTE4MD
+U3OTcyMTIsMTgxNDgwNTIyOCw4ODMwNzMzMTgsLTU3MzQ4ODE3
+OCwxNjU2NTA0NTAzLDExMjYwMDY4NjUsMjAwMTkxNTUwNSwxND
+I5Nzg5OTcyLDE1NTQ2MjkyMjEsMTY0MTkzNjM5OSw3NTYyNTA3
+MCwtMTM1NDIyNDUwLC0xNDA3MTI3NzE1LDE2NTMzMTkzNjUsLT
+E2NTUwNDA0MzgsLTg4NDIzODYzMywtMjAwMzQwNTYzOSwxNTA4
+MTk1ODM1XX0=
 -->
