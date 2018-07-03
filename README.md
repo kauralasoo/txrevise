@@ -70,12 +70,12 @@ We have also constructed an alternative set of "raw" annotation files where the 
 -   [Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz)
 
 ## Quantifying event expression
-
+Many transcript expression quantification tools (e.g. Salmon or kallisto) 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDk1MTEzOTk1LDg4MzA3MzMxOCwtNTczND
-g4MTc4LDE2NTY1MDQ1MDMsMTEyNjAwNjg2NSwyMDAxOTE1NTA1
-LDE0Mjk3ODk5NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1Nj
-I1MDcwLC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2
-NSwtMTY1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LD
-E1MDgxOTU4MzVdfQ==
+eyJoaXN0b3J5IjpbMTA3MzIxNTcwNyw4ODMwNzMzMTgsLTU3Mz
+Q4ODE3OCwxNjU2NTA0NTAzLDExMjYwMDY4NjUsMjAwMTkxNTUw
+NSwxNDI5Nzg5OTcyLDE1NTQ2MjkyMjEsMTY0MTkzNjM5OSw3NT
+YyNTA3MCwtMTM1NDIyNDUwLC0xNDA3MTI3NzE1LDE2NTMzMTkz
+NjUsLTE2NTUwNDA0MzgsLTg4NDIzODYzMywtMjAwMzQwNTYzOS
+wxNTA4MTk1ODM1XX0=
 -->
