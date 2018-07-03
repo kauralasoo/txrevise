@@ -70,12 +70,12 @@ We have also constructed an alternative set of "raw" annotation files where the 
 -   [Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.raw_events.version_1.tar.gz)
 
 ## Quantifying event expression
-Many transcript expression quantification tools (e.g. Salmon or kallisto) do not directly work with transcript annotations in GFF3 format and require the transcript sequences in 
+Many transcript expression quantification tools (e.g. Salmon or kallisto) do not directly work with transcript annotations in GFF3 format and require the transcript sequences in FAST
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAzMTcyMDQwLDg4MzA3MzMxOCwtNTczND
-g4MTc4LDE2NTY1MDQ1MDMsMTEyNjAwNjg2NSwyMDAxOTE1NTA1
-LDE0Mjk3ODk5NzIsMTU1NDYyOTIyMSwxNjQxOTM2Mzk5LDc1Nj
-I1MDcwLC0xMzU0MjI0NTAsLTE0MDcxMjc3MTUsMTY1MzMxOTM2
-NSwtMTY1NTA0MDQzOCwtODg0MjM4NjMzLC0yMDAzNDA1NjM5LD
-E1MDgxOTU4MzVdfQ==
+eyJoaXN0b3J5IjpbMTgxNDgwNTIyOCwyMDMxNzIwNDAsODgzMD
+czMzE4LC01NzM0ODgxNzgsMTY1NjUwNDUwMywxMTI2MDA2ODY1
+LDIwMDE5MTU1MDUsMTQyOTc4OTk3MiwxNTU0NjI5MjIxLDE2ND
+E5MzYzOTksNzU2MjUwNzAsLTEzNTQyMjQ1MCwtMTQwNzEyNzcx
+NSwxNjUzMzE5MzY1LC0xNjU1MDQwNDM4LC04ODQyMzg2MzMsLT
+IwMDM0MDU2MzksMTUwODE5NTgzNV19
 -->
