@@ -9,10 +9,11 @@ rule extract_tags:
 	threads: 1
 	resources:
 		mem = 1000
+	singularity:
+		"./txrevise.img"
 	shell:
 		"""
-		source activate py3.6
-		python extractTranscriptTags.py --gtf {input.gtf} > {output.tags}
+		python3 extractTranscriptTags.py --gtf {input.gtf} > {output.tags}
 		"""
 
 #Prepare annotationns
@@ -25,9 +26,10 @@ rule prepare_annotations:
 	threads: 1
 	resources:
 		mem = 6000
+	singularity:
+		"./txrevise.img"
 	shell:
 		"""
-		module load R-3.4.1
 		Rscript prepareAnnotations.R --gtf {input.gtf} --tags {input.tags} --out {output.annot}
 		"""
 
@@ -48,9 +50,10 @@ rule construct_events:
 	threads: 1
 	resources:
 		mem = 4000
+	singularity:
+		"./txrevise.img"
 	shell:
 		"""
-		module load R-3.4.1
 		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]}
 		"""
 
@@ -65,11 +68,13 @@ rule merge_gff_files:
 	threads: 1
 	resources:
 		mem = 1000
+	singularity:
+		"./txrevise.img"
 	shell:
 		'cat {input.gff} | grep -v "^#" > {output.gff}'
 
 
-#Iterate over grups and positions
+#Iterate over groups and positions
 rule make_all:
 	input:
 		gff = expand("processed/{{annotation}}/merged/txrevise.{group}.{position}.gff3", 
