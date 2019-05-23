@@ -13,7 +13,9 @@ Imports:
     GenomicRanges,
     dplyr,
     purrr,
-    purrrlyr
+    purrrlyr,
+    readr,
+    tidyr
 License: What license is it under?
 LazyData: true
 Roxygen: list(wrap = FALSE)
