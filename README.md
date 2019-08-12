@@ -61,8 +61,9 @@ Running _txrevise_ on the latest version of Ensembl can be quite timeconsuming. 
 
 We have constructed two types of events. In the main event files we have masked the alternative internal exons in the promoter and 3' end events (labeled upstream and downstream). This ensures that we can reliably distinguish promoter usage and 3' end usage from alternative splicing, which are likely to be driven by distinct molecular mechanisms. The main annotation files are:
 
--   [Homo_sapiens.GRCh37.87.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh37.87.version_1.tar.gz)
--   [Homo_sapiens.GRCh38.92.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.version_1.tar.gz)
+- [Homo_sapiens.GRCh37.87.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh37.87.version_1.tar.gz)
+- [Homo_sapiens.GRCh38.92.version_1.tar.gz](https://zenodo.org/record/1302499/files/Homo_sapiens.GRCh38.92.version_1.tar.gz)
+- [Homo_sapiens.GRCh38.96.version_1.tar.gz](https://zenodo.org/record/3232932/files/Homo_sapiens.GRCh38.96.version_1.tar.gz)
 
 We have also constructed an alternative set of "raw" annotation files where the alternative internal exons in promoter and 3' end events have not masked. This maximises QTL discovery, because we can now also detect splicing event near promoters and 3 ends, but it comes at the expense that we are no longer able to distinguish between different molecular mechanisms. The raw annotation files are:
 
