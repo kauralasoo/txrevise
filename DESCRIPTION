@@ -16,7 +16,7 @@ Imports:
     purrrlyr,
     readr,
     tidyr
-License: What license is it under?
+License: Apache-2.0
 LazyData: true
 Roxygen: list(wrap = FALSE)
 Suggests: 
