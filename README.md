@@ -1,6 +1,10 @@
 # _txrevise_
 _txrevise_ R package provides utilites to pre-process Ensembl transcript annotations to quantify differences in transcript strucuture (alternative promoters, alternative splicing, alternative poly-adenylation) either between experimental conditions or genotypes (e.g. for transcript usage quntitative trait loci (tuQTL) mapping). 
 
+If you use txrevise in your research, please cite the following paper: [Alasoo, Kaur, et al. "Genetic effects on promoter usage are highly context-specific and contribute to complex traits." Elife 8 (2019): e41673](https://doi.org/10.7554/eLife.41673)
+
+
+
 ## Constructing transcription events
 This section contains step-by-step instruction for how to construct transcriptional events based from Ensembl transcrtipt annotations. We have also written a [Snakefile](https://github.com/kauralasoo/txrevise/blob/master/scripts/Snakefile) for [snakemake](http://snakemake.readthedocs.io/en/stable/) that automates all of the steps and can be easily [executed in parallel](http://snakemake.readthedocs.io/en/latest/executable.html) on multiple cores or on a compute cluster. 
 
