@@ -20,7 +20,7 @@ constructAlternativeEvents <- function(granges_list, gene_id, max_internal_diff 
   tx_groups = identifyTranscriptGroups(granges_list)
   group_list = list()
 
-  #Construct alternative events for each clique separately
+  #Construct alternative events for each group separately
   group_number = 1
   for (tx_group in tx_groups){
     shared_exons = listIntersect(tx_group)
@@ -157,8 +157,13 @@ constructAlternativeEventsWrapper <- function(gene_id, gene_metadata, exons, cds
 }
 
 #' Combine all alternative events into a single list with appropriate names
+#'
+#' @param alt_events List of alternative events from constructAlternativeEventsWrapper
+#' @param min_alt_event_count Minimal number of required alternative events per group (default: 1). 
+#' Increase this to only report events with more than one alternative.
+#'
 #' @export
-flattenAlternativeEvents <- function(alt_events){
+flattenAlternativeEvents <- function(alt_events, min_alt_event_count = 1){
   flat_event_list = list()
   #Iterate through all events
   gene_cliques = names(alt_events)
@@ -167,8 +172,8 @@ flattenAlternativeEvents <- function(alt_events){
     event_types = names(clique_events)
     for (event in event_types){
       event_list = clique_events[[event]]
-      #Only add events to the final list if there are at least 2 alternative transcripts
-      if (length(event_list) > 1){
+      #Only add events to the final list if there are at least min_alt_event_count alternative transcripts
+      if (length(event_list) >= min_alt_event_count){
         new_names = paste(gene_clique, event, names(event_list), sep =".")
         names(event_list) = new_names
         flat_event_list = c(flat_event_list, event_list)
@@ -196,6 +201,12 @@ makeBinary <- function(ids, len){
   return(result_vector)
 }
 
+#' Identify two groups of overlapping transcripts that share the most exons between each other
+#'
+#' @param granges_list GRanges list of transcripts
+#'
+#' @return A list of lists containing transcripts in the two groups
+#' @export
 identifyTranscriptGroups <- function(granges_list){
   
   #Construct disjoint exons and count overlaps
