@@ -1,4 +1,4 @@
-FROM bioconductor/release_core2
+FROM bioconductor/bioconductor_docker:RELEASE_3_10
 LABEL authors="Kaur Alasoo" \
       description="Docker image containing all requirements for txrevise R package and pipeline"
 
