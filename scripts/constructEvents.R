@@ -9,14 +9,28 @@ option_list <- list(
   make_option(c("--out"), type="character", default = "NULL", 
               help = "Path to the output folder.", metavar = "path"),
   make_option(c("--fill"), type="logical", default = TRUE, 
-              help = "Fill alternative internal exons for promoter and 3'end events..", metavar = "path")
+              help = "Fill alternative internal exons for promoter and 3'end events..", metavar = "path"),
+  make_option(c("--cage"), type="character", default = NULL, 
+              help = "Path to the CAGE annotations file.", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
+
+#Debugging
+if(FALSE){
+  opt = list(
+    annot = "scripts/processed/Homo_sapiens.GRCh38.96.txrevise_annotations.rds",
+    batch = "40 400",
+    out = "test_out",
+    fill = TRUE,
+    cage = "data/CAGE_promoter_annotations_240420.rds"
+    )
+}
 
 annot_file = opt$annot
 batch_string = opt$batch
 out_dir = opt$out
 fill_internal_exons = opt$fill
+cage_file = opt$cage
 dir.create(out_dir)
 
 #Import other dependencies
@@ -27,6 +41,18 @@ suppressMessages(library("rtracklayer"))
 
 #Import prepared transcript annotations
 txrevise_data = readRDS(annot_file)
+
+#Import CAGE promoter annotations and merge them into Ensembl annotations
+if(!is.null(cage_file)){
+  cage_data = readRDS(cage_file)
+  new_exons = c(txrevise_data$exons, cage_data$exons)
+  new_metadata = dplyr::select(txrevise_data$transcript_metadata, 
+                               ensembl_gene_id, ensembl_transcript_id,
+                               longest_start, longest_end, cds_start_NF, 
+                               cds_end_NF, cds_start_end_NF)
+  new_metadata = dplyr::bind_rows(new_metadata, cage_data$transcript_metadata)
+  txrevise_data = list(exons = new_exons, cdss = txrevise_data$cdss, transcript_metadata = new_metadata)
+}
 
 #### Split genes into batches ####
 batch_vector = as.integer(unlist(strsplit(batch_string, split = " ")))
