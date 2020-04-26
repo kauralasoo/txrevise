@@ -2,7 +2,6 @@ library("dplyr")
 library("wiggleplotr")
 library("devtools")
 library("tidyr")
-load_all("../txrevise/")
 
 #Import prepared transcript annotations
 txrevise_data = readRDS("scripts/processed/Homo_sapiens.GRCh38.96.txrevise_annotations.rds")

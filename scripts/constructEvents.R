@@ -77,7 +77,7 @@ if (length(selected_gene_ids) > 0){
                                                          txrevise_data$exons, 
                                                          txrevise_data$cdss,
                                                          max_internal_diff = 10, 
-                                                         max_start_end_diff = 25,
+                                                         max_start_end_diff = 10,
                                                          fill_internal = fill_internal_exons)$result)
   failed_genes = purrr::map_lgl(alt_events, is.null)
   alt_events = alt_events[!failed_genes] #Remove failed genes
