@@ -11,9 +11,12 @@ option_list <- list(
   make_option(c("--fill"), type="logical", default = TRUE, 
               help = "Fill alternative internal exons for promoter and 3'end events..", metavar = "path"),
   make_option(c("--cage"), type="character", default = NULL, 
-              help = "Path to the CAGE annotations file.", metavar = "path")
+              help = "Path to the CAGE annotations file.", metavar = "path"),
+  make_option(c("--start_end_diff"), type="integer", default = 25, 
+              help = "Minimal difference (in basepairs) between the alternative promoters or 3'ends.", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
+print(opt)
 
 #Debugging
 if(FALSE){
@@ -31,6 +34,7 @@ batch_string = opt$batch
 out_dir = opt$out
 fill_internal_exons = opt$fill
 cage_file = opt$cage
+start_end_diff = opt$start_end_diff
 dir.create(out_dir)
 
 #Import other dependencies
@@ -77,7 +81,7 @@ if (length(selected_gene_ids) > 0){
                                                          txrevise_data$exons, 
                                                          txrevise_data$cdss,
                                                          max_internal_diff = 10, 
-                                                         max_start_end_diff = 10,
+                                                         max_start_end_diff = start_end_diff,
                                                          fill_internal = fill_internal_exons)$result)
   failed_genes = purrr::map_lgl(alt_events, is.null)
   alt_events = alt_events[!failed_genes] #Remove failed genes

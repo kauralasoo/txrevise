@@ -54,7 +54,7 @@ rule construct_events:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]} --cage ../data/CAGE_promoter_annotations_240420.rds
+		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]} --start_end_diff {config[start_end_diff]} --cage ../data/CAGE_promoter_annotations_240420.rds
 		"""
 
 #Merge txrevise output files
