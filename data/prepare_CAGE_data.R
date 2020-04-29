@@ -7,7 +7,7 @@ library("tidyr")
 txrevise_data = readRDS("scripts/processed/Homo_sapiens.GRCh38.96.txrevise_annotations.rds")
 
 #Import CAGE data
-cage_transcripts = readRDS("data/new_transcripts.rds")
+cage_transcripts = readRDS("data/new_transcripts_25bp.rds")
 
 #Make transcript metadata for cage peaks
 cage_metadata = dplyr::tibble(cage_id = names(cage_transcripts)) %>% 
@@ -25,4 +25,4 @@ names(cage_transcripts) = cage_metadata$ensembl_transcript_id
 
 #Make list with cage metadata
 cage_list = list(exons = cage_transcripts, transcript_metadata = cage_metadata)
-saveRDS(cage_list, "data/CAGE_promoter_annotations_240420.rds")
+saveRDS(cage_list, "data/CAGE_promoter_annotations_25bp_290420.rds")
