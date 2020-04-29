@@ -1,7 +1,7 @@
 ### Homo_sapiens.GRCh38.92 ###
 
 #Fill internal exons for promoter and 3'end events
-snakemake -p processed/Homo_sapiens.GRCh38.96_log.txt --cluster ./snakemake_submit_UT.py --jobs 200 --config fill=TRUE start_end_diff=25 --use-singularity
+snakemake -p processed/Homo_sapiens.GRCh38.96_log.txt --cluster ./snakemake_submit_UT.py --jobs 200 --config fill=TRUE start_end_diff=25 cage=../data/CAGE_promoter_annotations_25bp_290420.rds --use-singularity
 
 ### Homo_sapiens.GRCh38.92 ###
 
