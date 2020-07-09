@@ -22,7 +22,7 @@ rule prepare_annotations:
 		gtf = "processed/{annotation}.gtf.gz",
 		tags = "processed/{annotation}.transcript_tags.txt"
 	output:
-		annot = "processed/{annotation}_txrevise_annotations.rds"
+		annot = "processed/{annotation}.txrevise_annotations.rds"
 	threads: 1
 	resources:
 		mem = 6000
@@ -36,7 +36,7 @@ rule prepare_annotations:
 #Construct events
 rule construct_events:
 	input:
-		annot = "processed/{annotation}_txrevise_annotations.rds"
+		annot = "processed/{annotation}.txrevise_annotations.rds"
 	output:
 		"processed/{annotation}/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
 		"processed/{annotation}/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
@@ -77,8 +77,8 @@ rule merge_gff_files:
 #Iterate over groups and positions
 rule make_all:
 	input:
-		gff = expand("processed/{{annotation}}/merged/txrevise.{group}.{position}.gff3", 
-			group = ["grp_1", "grp_2"], 
+		gff = expand("processed/{{annotation}}/merged/txrevise.{group}.{position}.gff3",
+			group = ["grp_1", "grp_2"],
 			position = ["upstream", "contained", "downstream"])
 	output:
 		"processed/{annotation}_log.txt"

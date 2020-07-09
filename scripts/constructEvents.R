@@ -4,15 +4,15 @@ library("optparse")
 option_list <- list(
   make_option(c("--annot"), type="character", default=NULL,
               help="Path to the annotations file made by prepareAnnotations.R.", metavar = "path"),
-  make_option(c("--batch"), type="character", default = "NULL", 
+  make_option(c("--batch"), type="character", default = "NULL",
               help = "Specify analysis batch. Value '1 200' would split the gene ids into 200 batches and run the first batch.", metavar = "path"),
-  make_option(c("--out"), type="character", default = "NULL", 
+  make_option(c("--out"), type="character", default = "NULL",
               help = "Path to the output folder.", metavar = "path"),
-  make_option(c("--fill"), type="logical", default = TRUE, 
+  make_option(c("--fill"), type="logical", default = TRUE,
               help = "Fill alternative internal exons for promoter and 3'end events..", metavar = "path"),
-  make_option(c("--cage"), type="character", default = NULL, 
+  make_option(c("--cage"), type="character", default = NULL,
               help = "Path to the CAGE annotations file.", metavar = "path"),
-  make_option(c("--start_end_diff"), type="integer", default = 25, 
+  make_option(c("--start_end_diff"), type="integer", default = 25,
               help = "Minimal difference (in basepairs) between the alternative promoters or 3'ends.", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
@@ -25,7 +25,7 @@ if(FALSE){
     batch = "40 400",
     out = "test_out",
     fill = TRUE,
-    cage = "data/CAGE_promoter_annotations_240420.rds"
+    cage = "data/CAGE_promoter_annotations_25.rds"
     )
 }
 
@@ -50,9 +50,9 @@ txrevise_data = readRDS(annot_file)
 if(!is.null(cage_file)){
   cage_data = readRDS(cage_file)
   new_exons = c(txrevise_data$exons, cage_data$exons)
-  new_metadata = dplyr::select(txrevise_data$transcript_metadata, 
+  new_metadata = dplyr::select(txrevise_data$transcript_metadata,
                                ensembl_gene_id, ensembl_transcript_id,
-                               longest_start, longest_end, cds_start_NF, 
+                               longest_start, longest_end, cds_start_NF,
                                cds_end_NF, cds_start_end_NF)
   new_metadata = dplyr::bind_rows(new_metadata, cage_data$transcript_metadata)
   txrevise_data = list(exons = new_exons, cdss = txrevise_data$cdss, transcript_metadata = new_metadata)
@@ -77,21 +77,21 @@ if (length(selected_gene_ids) > 0){
 
   #Construct alternative events and remove failed genes
   safe_construct = purrr::safely(constructAlternativeEventsWrapper)
-  alt_events = purrr::map(gene_ids_list, ~safe_construct(., txrevise_data$transcript_metadata, 
-                                                         txrevise_data$exons, 
+  alt_events = purrr::map(gene_ids_list, ~safe_construct(., txrevise_data$transcript_metadata,
+                                                         txrevise_data$exons,
                                                          txrevise_data$cdss,
-                                                         max_internal_diff = 10, 
+                                                         max_internal_diff = 10,
                                                          max_start_end_diff = start_end_diff,
                                                          fill_internal = fill_internal_exons)$result)
   failed_genes = purrr::map_lgl(alt_events, is.null)
   alt_events = alt_events[!failed_genes] #Remove failed genes
-  
+
   #Flatten
   alt_events = purrr::flatten(alt_events) %>% txrevise::flattenAlternativeEvents(min_alt_event_count = 1)
-  
+
   #Construct event metadata
   event_metadata = txrevise::constructEventMetadata(names(alt_events))
-  
+
   #Iterate over groups and positions and export annotations to gff files
   for (group in c("grp_1", "grp_2")){
     for (event in c("upstream", "downstream", "contained")){
@@ -106,7 +106,7 @@ if (length(selected_gene_ids) > 0){
       }
     }
   }
-  
+
   #Write failed genes
   failed_names = names(which(failed_genes))
   if(length(failed_names) > 0){
