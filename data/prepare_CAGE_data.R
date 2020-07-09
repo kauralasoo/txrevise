@@ -1,5 +1,4 @@
 library("dplyr")
-library("wiggleplotr")
 library("devtools")
 library("tidyr")
 
