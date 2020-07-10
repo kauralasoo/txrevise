@@ -13,10 +13,9 @@ cage_metadata = dplyr::tibble(cage_id = names(cage_transcripts)) %>%
   tidyr::separate(cage_id, c("ensembl_gene_id","dot1", "dot2", "index")) %>%
   dplyr::select(ensembl_gene_id) %>%
   dplyr::group_by(ensembl_gene_id) %>%
-  dplyr::summarise(n = n()) %>%
-  tidyr::uncount(n, .id="index") %>%
-  dplyr::mutate(ensembl_transcript_id = paste0(ensembl_gene_id, "_CAGE", index)) %>%
-  dplyr::select(-index) %>%
+  dplyr::mutate(transcript_number = c(1:n())) %>%
+  dplyr::mutate(ensembl_transcript_id = paste0(ensembl_gene_id, "_CAGE", transcript_number)) %>%
+  dplyr::select(-transcript_number) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(longest_start = 0, longest_end = 0, cds_start_NF = 0, cds_end_NF = 1, cds_start_end_NF = 0)
 cage_metadata = dplyr::semi_join(cage_metadata, txrevise_data$transcript_metadata, by = "ensembl_gene_id")

@@ -10,3 +10,4 @@ tests/testthat/.Rhistory
 txrevise.Rproj
 scripts/.snakemake
 scripts/processed
+*.img
