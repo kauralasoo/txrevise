@@ -33,10 +33,28 @@ rule prepare_annotations:
 		Rscript prepareAnnotations.R --gtf {input.gtf} --tags {input.tags} --out {output.annot}
 		"""
 
+#Prepare CAGE annotations for integration
+rule prepare_cage:
+	input:
+		annot = "processed/{annotation}.txrevise_annotations.rds",
+		transcripts = "../data/new_transcripts_25.rds"
+	output:
+		cage_annots = "../data/CAGE_promoter_annotations_25.rds"
+	threads: 1
+	resources:
+		mem = 6000
+	singularity:
+		"./txrevise.img"
+	shell:
+		"""
+		Rscript ../data/prepare_CAGE_data.R
+		"""
+
 #Construct events
 rule construct_events:
 	input:
-		annot = "processed/{annotation}.txrevise_annotations.rds"
+		annot = "processed/{annotation}.txrevise_annotations.rds",
+		cage_annots = "../data/CAGE_promoter_annotations_25.rds"
 	output:
 		"processed/{annotation}/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
 		"processed/{annotation}/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
@@ -54,7 +72,7 @@ rule construct_events:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]}
+		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]} --start_end_diff {config[start_end_diff]} --cage {input.cage_annots}
 		"""
 
 #Merge txrevise output files
