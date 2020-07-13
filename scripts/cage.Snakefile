@@ -39,7 +39,7 @@ rule prepare_cage:
 		annot = "processed/{annotation}.txrevise_annotations.rds",
 		transcripts = "../data/new_transcripts_25.rds"
 	output:
-		cage_annots = "../data/CAGE_promoter_annotations_25.rds"
+		cage_annots = "processed/CAGE_promoter_annotations_25.rds"
 	threads: 1
 	resources:
 		mem = 6000
@@ -47,14 +47,14 @@ rule prepare_cage:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript ../data/prepare_CAGE_data.R
+		Rscript prepare_CAGE_data.R
 		"""
 
 #Construct events
 rule construct_events:
 	input:
 		annot = "processed/{annotation}.txrevise_annotations.rds",
-		cage_annots = "../data/CAGE_promoter_annotations_25.rds"
+		cage_annots = "processed/CAGE_promoter_annotations_25.rds"
 	output:
 		"processed/{annotation}/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
 		"processed/{annotation}/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
