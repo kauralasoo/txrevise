@@ -1,9 +1,17 @@
 library("dplyr")
 library("devtools")
 library("tidyr")
+library("optparse")
+
+#Read command-line options
+option_list <- list(
+  make_option(c("--txrevise_annotations"), type="character", default=NULL,
+              help="Path to the annotations file made by prepareAnnotations.R.", metavar = "path")
+)
+opt <- parse_args(OptionParser(option_list=option_list))
 
 #Import prepared transcript annotations
-txrevise_data = readRDS("processed/Homo_sapiens.GRCh38.96.txrevise_annotations.rds")
+txrevise_data = readRDS(opt$txrevise_annotations)
 
 #Import CAGE data
 cage_transcripts = readRDS("../data/new_transcripts_25.rds")
