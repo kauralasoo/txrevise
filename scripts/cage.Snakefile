@@ -96,13 +96,13 @@ rule merge_gff_files:
 #Iterate over groups and positions
 rule make_all:
 	input:
-              	 gff = expand("processed/{{annotation}}/merged/txrevise.{group}.{position}.gff3",
-                         group = ["grp_1", "grp_2"],
-                         position = ["upstream", "contained", "downstream"])
-        output:
-                "processed/{annotation}_log.txt"
-        threads: 1
-        resources:
-                mem = 1000
-        shell:
-              	"echo 'Done!' > {output}"
+		gff = expand("processed/{{annotation}}/merged/txrevise.{group}.{position}.gff3",
+					group = ["grp_1", "grp_2"],
+					position = ["upstream", "contained", "downstream"])
+	output:
+		"processed/{annotation}_log.txt"
+	threads: 1
+	resources:
+		mem = 1000
+	shell:
+		"echo 'Done!' > {output}"
