@@ -5,8 +5,12 @@ library("optparse")
 
 #Read command-line options
 option_list <- list(
+  make_option(c("--new_transcripts"), type="character", default=NULL,
+              help="Path to new annotations made based on CAGE.", metavar = "path"),
   make_option(c("--txrevise_annotations"), type="character", default=NULL,
-              help="Path to the annotations file made by prepareAnnotations.R.", metavar = "path")
+              help="Path to the annotations file made by prepareAnnotations.R.", metavar = "path"),
+  make_option(c("--output"), type="character", default=NULL,
+              help="Where to output metadata.", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
 
@@ -14,7 +18,7 @@ opt <- parse_args(OptionParser(option_list=option_list))
 txrevise_data = readRDS(opt$txrevise_annotations)
 
 #Import CAGE data
-cage_transcripts = readRDS("../data/new_transcripts_25.rds")
+cage_transcripts = readRDS(opt$new_transcripts)
 
 #Make transcript metadata for cage peaks
 cage_metadata = dplyr::tibble(cage_id = names(cage_transcripts)) %>%
@@ -32,4 +36,4 @@ names(cage_transcripts) = cage_metadata$ensembl_transcript_id
 
 #Make list with cage metadata
 cage_list = list(exons = cage_transcripts, transcript_metadata = cage_metadata)
-saveRDS(cage_list, "processed/CAGE_promoter_annotations_25.rds")
+saveRDS(cage_list, opt$output)
