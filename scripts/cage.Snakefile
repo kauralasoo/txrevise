@@ -1,20 +1,5 @@
 N_BATCHES = 200
-annotation = config["annotation"]
-
-
-#Iterate over groups and positions
-rule make_all:
-	input:
-		gff = expand("processed/{{annotation}}/merged/txrevise.{group}.{position}.gff3",
-			group = ["grp_1", "grp_2"],
-			position = ["upstream", "contained", "downstream"])
-	output:
-		"processed/{annotation}_log.txt"
-	threads: 1
-	resources:
-		mem = 1000
-	shell:
-		"echo 'Done!' > {output}"
+annotation_ = config["annotation"]
 
 
 #Extract trascript tags from the GTF file
@@ -53,7 +38,7 @@ rule prepare_annotations:
 #Prepare CAGE annotations for integration
 rule prepare_cage:
 	input:
-		annot = "processed/{annotation}.txrevise_annotations.rds",
+		annot = "processed/{annotation_}.txrevise_annotations.rds",
 		transcripts = "../data/new_transcripts_25.rds"
 	output:
 		cage_annots = "processed/CAGE_promoter_annotations_25.rds"
@@ -107,3 +92,17 @@ rule merge_gff_files:
 		"./txrevise.img"
 	shell:
 		'cat {input.gff} | grep -v "^#" > {output.gff}'
+
+#Iterate over groups and positions
+rule make_all:
+	input:
+              	 gff = expand("processed/{{annotation}}/merged/txrevise.{group}.{position}.gff3",
+                         group = ["grp_1", "grp_2"],
+                         position = ["upstream", "contained", "downstream"])
+        output:
+                "processed/{annotation}_log.txt"
+        threads: 1
+        resources:
+                mem = 1000
+        shell:
+              	"echo 'Done!' > {output}"
