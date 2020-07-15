@@ -10,4 +10,6 @@ tests/testthat/.Rhistory
 txrevise.Rproj
 scripts/.snakemake
 scripts/processed
+!scripts/processed/new_transcripts*
+scripts/SlurmOut
 *.img

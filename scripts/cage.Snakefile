@@ -37,7 +37,7 @@ rule prepare_annotations:
 #Prepare CAGE annotations for integration
 rule prepare_cage:
 	input:
-		transcripts = "../data/new_transcripts_25.rds",
+		transcripts = "processed/new_transcripts_25.rds",
 		annot = "processed/{annotation}.txrevise_annotations.rds"
 	output:
 		cage_annots = "processed/{annotation}.CAGE_promoter_annotations_25.rds"
@@ -48,7 +48,7 @@ rule prepare_cage:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript prepare_CAGE_data.R --new_transcripts {transcripts} --txrevise_annotations {input.annot} --output {output.cage_annots}
+		Rscript prepare_CAGE_data.R --new_transcripts {input.transcripts} --txrevise_annotations {input.annot} --output {output.cage_annots}
 		"""
 
 #Construct events
