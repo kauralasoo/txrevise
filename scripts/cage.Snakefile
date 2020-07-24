@@ -53,8 +53,7 @@ rule prepare_cage:
 #Construct events for regular annotations
 rule construct_events_regular:
 	input:
-		annot = "processed/{annotation}.txrevise_annotations.rds",
-		cage_annots = "processed/{annotation}.CAGE_promoter_annotations_25.rds"
+		annot = "processed/{annotation}_{kind}/{annotation}_regular.txrevise_annotations.rds"
 	output:
 		"processed/{annotation}_regular/batch/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
 		"processed/{annotation}_regular/batch/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
@@ -79,7 +78,7 @@ rule construct_events_regular:
 rule construct_events_cage:
 	input:
 		annot = "processed/{annotation}.txrevise_annotations.rds",
-		cage_annots = "processed/{annotation}.CAGE_promoter_annotations_25.rds"
+		cage_annots = "processed/{annotation}_CAGE_{N}/{annotation}_CAGE_{N}.txrevise_annotations.rds"
 	output:
 		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
 		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
@@ -89,7 +88,7 @@ rule construct_events_cage:
 		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_2.downstream.{batch}_{n_batches}.gff3"
 	params:
 		batch_str = "'{batch} {n_batches}'",
-		outdir = "processed/{annotation}_CAGE_{N}/batch"
+		outdir = "processed/{annotation}_CAGE_{N}/batch",
 		n = "{N}"
 	threads: 1
 	resources:
@@ -152,7 +151,7 @@ rule make_one:
 #Create cage annotations for every N
 rule make_multiple_cage:
 	input:
-		N_out = expand("processed/{{annotation}}_CAGE_{N}/completed.txt", N = config['Ns'].split(' '))
+		N_out = expand("processed/{{annotation}}_CAGE_{N}/completed.txt", N = str(config['Ns']).split(' '))
 	output:
 		"processed/{annotation}_all_completed.txt"
 	threads: 1
