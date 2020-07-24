@@ -36,8 +36,8 @@ rule prepare_annotations:
 #Create new transcript annotations from promoter annotations and regular txrevise annotations
 rule build_cage_annotations:
 	input:
-		grp1 = "processed/{annotation}_CAGE_regular/txrevise_regular.grp_1.upstream.gff3",
-		grp2 = "processed/{annotation}_CAGE_regular/txrevise_regular.grp_2.upstream.gff3",
+		grp1 = "processed/{annotation}_regular/txrevise_regular.grp_1.upstream.gff3",
+		grp2 = "processed/{annotation}_regular/txrevise_regular.grp_2.upstream.gff3",
 		promoters = "processed/input/promoters.tsv",
 		genes = "processed/input/genes.rds"
 	output:
