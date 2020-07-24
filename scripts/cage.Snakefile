@@ -77,7 +77,7 @@ rule construct_events_regular:
 #Construct events for CAGE
 rule construct_events_cage:
 	input:
-		annot = "processed/{annotation}.txrevise_annotations.rds",
+		annot = "processed/{annotation}_CAGE_{N}/{annotation}_regular.txrevise_annotations.rds",
 		cage_annots = "processed/{annotation}_CAGE_{N}/{annotation}_CAGE_{N}.txrevise_annotations.rds"
 	output:
 		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
@@ -97,7 +97,7 @@ rule construct_events_cage:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]} --start_end_diff {n} --cage {input.cage_annots}
+		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]} --start_end_diff {params.n} --cage {input.cage_annots}
 		"""
 
 #Merge txrevise output files
