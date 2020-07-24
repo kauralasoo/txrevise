@@ -22,7 +22,7 @@ rule prepare_annotations:
 		gtf = "processed/input/{annotation}.gtf.gz",
 		tags = "processed/{annotation}.transcript_tags.txt"
 	output:
-		annot = "processed/{annotation}_{kind}/{annotation}_regular.txrevise_annotations.rds"
+		annot = "processed/{annotation}_regular/{annotation}_regular.txrevise_annotations.rds"
 	threads: 1
 	resources:
 		mem = 6000
@@ -36,8 +36,8 @@ rule prepare_annotations:
 #Create new transcript annotations from promoter annotations and regular txrevise annotations
 rule build_cage_annotations:
 	input:
-		grp1 = "processed/{annotation}_{kind}/txrevise_{kind}.grp_1.upstream.gff3",
-		grp2 = "processed/{annotation}_{kind}/txrevise_{kind}.grp_2.upstream.gff3",
+		grp1 = "processed/{annotation}_CAGE_regular/txrevise_regular.grp_1.upstream.gff3",
+		grp2 = "processed/{annotation}_CAGE_regular/txrevise_regular.grp_2.upstream.gff3",
 		promoters = "processed/input/promoters.tsv",
 		genes = "processed/input/genes.rds"
 	output:
@@ -56,7 +56,7 @@ rule build_cage_annotations:
 rule prepare_cage:
 	input:
 		transcripts = "processed/{annotation}_CAGE_{N}/new_transcripts_{N}.rds",
-		annot = "processed/{annotation}_CAGE_{N}/{annotation}_regular.txrevise_annotations.rds"
+		annot = "processed/{annotation}_regular/{annotation}_regular.txrevise_annotations.rds"
 	output:
 		cage_annots = "processed/{annotation}_CAGE_{N}/{annotation}_CAGE_{N}.txrevise_annotations.rds"
 	threads: 1
@@ -72,7 +72,7 @@ rule prepare_cage:
 #Construct events for regular annotations
 rule construct_events_regular:
 	input:
-		annot = "processed/{annotation}_{kind}/{annotation}_regular.txrevise_annotations.rds"
+		annot = "processed/{annotation}_regular/{annotation}_regular.txrevise_annotations.rds"
 	output:
 		"processed/{annotation}_regular/batch/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
 		"processed/{annotation}_regular/batch/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
@@ -96,7 +96,7 @@ rule construct_events_regular:
 #Construct events for CAGE
 rule construct_events_cage:
 	input:
-		annot = "processed/{annotation}_CAGE_{N}/{annotation}_regular.txrevise_annotations.rds",
+		annot = "processed/{annotation}_regular/{annotation}_regular.txrevise_annotations.rds",
 		cage_annots = "processed/{annotation}_CAGE_{N}/{annotation}_CAGE_{N}.txrevise_annotations.rds"
 	output:
 		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
