@@ -1,6 +1,6 @@
 N_BATCHES = 200
 
-#Extract trascript tags from the GTF file
+#Extract transcript tags from the GTF file
 rule extract_tags:
 	input:
 		gtf = "processed/input/{annotation}.gtf.gz"
@@ -33,10 +33,29 @@ rule prepare_annotations:
 		Rscript prepareAnnotations.R --gtf {input.gtf} --tags {input.tags} --out {output.annot}
 		"""
 
+#Create new transcript annotations from promoter annotations and regular txrevise annotations
+rule build_cage_annotations:
+	input:
+		grp1 = "processed/{annotation}_{kind}/txrevise_{kind}.grp_1.upstream.gff3",
+		grp2 = "processed/{annotation}_{kind}/txrevise_{kind}.grp_2.upstream.gff3",
+		promoters = "processed/input/promoters.tsv",
+		genes = "processed/input/genes.rds"
+	output:
+		annot = "processed/{annotation}_CAGE_{N}/new_transcripts_{N}.rds"
+	threads: 4
+	resources:
+		mem = 8000
+	singularity:
+		"./txrevise.img"
+	shell:
+		"""
+		Rscript build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N}
+		"""
+
 #Prepare CAGE annotations for integration
 rule prepare_cage:
 	input:
-		transcripts = "processed/input/new_transcripts_{N}.rds",
+		transcripts = "processed/{annotation}_CAGE_{N}/new_transcripts_{N}.rds",
 		annot = "processed/{annotation}_CAGE_{N}/{annotation}_regular.txrevise_annotations.rds"
 	output:
 		cage_annots = "processed/{annotation}_CAGE_{N}/{annotation}_CAGE_{N}.txrevise_annotations.rds"
@@ -88,8 +107,7 @@ rule construct_events_cage:
 		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_2.downstream.{batch}_{n_batches}.gff3"
 	params:
 		batch_str = "'{batch} {n_batches}'",
-		outdir = "processed/{annotation}_CAGE_{N}/batch",
-		n = "{N}"
+		outdir = "processed/{annotation}_CAGE_{N}/batch"
 	threads: 1
 	resources:
 		mem = 4000
@@ -97,7 +115,7 @@ rule construct_events_cage:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]} --start_end_diff {params.n} --cage {input.cage_annots}
+		Rscript constructEvents.R --annot {input.annot} --batch {params.batch_str} --out {params.outdir} --fill {config[fill]} --start_end_diff {wildcards.N} --cage {input.cage_annots}
 		"""
 
 #Merge txrevise output files
