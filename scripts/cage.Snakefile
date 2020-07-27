@@ -1,3 +1,9 @@
+# Requires files:
+# - txrevise.img Singularity image (always)
+# - processed/input/{annotation}.gtf.gz (always)
+# - processed/input/promoters.tsv (cage)
+# - processed/input/genes.rds (optional) (cage)
+
 N_BATCHES = 200
 
 #Extract transcript tags from the GTF file
@@ -49,7 +55,7 @@ rule build_cage_annotations:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N}
+		Rscript build_cage_annotations.R --verbose --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N}
 		"""
 
 #Prepare CAGE annotations for integration
