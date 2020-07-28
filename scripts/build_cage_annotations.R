@@ -17,7 +17,7 @@ option_list <- list(
   make_option(c("--genes"), type="character", default=NULL,
               help="Path to .rds file containing a vector of strings (ENSEMBL ID-s) that
               specify the subset of genes to create annotations for (optional)", metavar = "path"),
-  make_option(c("--N"), type=integer, default=25,
+  make_option(c("--N"), type="integer", default=25,
               help="Integer specifying how far new exon starts need to be
               from exixting and new annotations", metavar = "integer")
 )
