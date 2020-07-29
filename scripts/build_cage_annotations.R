@@ -1,3 +1,5 @@
+# TODO: use profiler
+
 library("data.table") # %like%
 library("rtracklayer")
 library("GenomicRanges")
@@ -19,7 +21,9 @@ option_list <- list(
               specify the subset of genes to create annotations for (optional)", metavar = "path"),
   make_option(c("--N"), type="integer", default=25,
               help="Integer specifying how far new exon starts need to be
-              from exixting and new annotations", metavar = "integer")
+              from exixting and new annotations", metavar = "integer"),
+  make_option(c("--output"), type="character", default="",
+              help="RDS file to where to write the new annotations", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
 
@@ -224,5 +228,4 @@ print("genes using distance")
 PROMOTER_BUFFER_RANGE
 
 all_new_transcripts = GRangesList(all_new_transcripts)
-saveRDS(all_new_transcripts, paste0("new_transcripts_", PROMOTER_BUFFER_RANGE, ".rds"))
-#saveRDS(new_transcript_genes, paste0("new_transcript_genes_", PROMOTER_BUFFER_RANGE, ".rds"))
+saveRDS(all_new_transcripts, opt$output)

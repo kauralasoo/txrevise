@@ -55,7 +55,7 @@ rule build_cage_annotations:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N}
+		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N} --output {output.annot}
 		"""
 
 #Prepare CAGE annotations for integration
@@ -175,7 +175,8 @@ rule make_one:
 #Create cage annotations for every N
 rule make_multiple_cage:
 	input:
-		N_out = expand("processed/{{annotation}}_CAGE_{N}/completed.txt", N = str(config['Ns']).split(' '))
+		N_out = expand("processed/{{annotation}}_CAGE_{N}/completed.txt", N = str(config['Ns']).split(' ')),
+		regular_out = "processed/{annotation}_regular/completed.txt" # to get all regular gff files
 	output:
 		"processed/{annotation}_all_completed.txt"
 	threads: 1
