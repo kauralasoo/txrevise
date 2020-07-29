@@ -20,12 +20,17 @@ txrevise_data = readRDS(opt$txrevise_annotations)
 #Import CAGE data
 cage_transcripts = readRDS(opt$new_transcripts)
 
+repeat_rows_and_index = function(df) {
+  return(df[rep(row.names(df), df$times),])
+}
+
 #Make transcript metadata for cage peaks
 cage_metadata = dplyr::tibble(cage_id = names(cage_transcripts)) %>%
   tidyr::separate(cage_id, c("ensembl_gene_id","dot1", "dot2", "index")) %>%
   dplyr::select(ensembl_gene_id) %>%
   dplyr::group_by(ensembl_gene_id) %>%
-  dplyr::summarise(transcript_number = c(1:n())) %>%
+  dplyr::summarise(times = n()) %>%
+  tidyr::uncount(weights = times, .id = "transcript_number") %>%
   dplyr::mutate(ensembl_transcript_id = paste0(ensembl_gene_id, "_CAGE", transcript_number)) %>%
   dplyr::select(-transcript_number) %>%
   dplyr::ungroup() %>%
