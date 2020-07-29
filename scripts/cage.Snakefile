@@ -144,7 +144,8 @@ rule merge_gff_files:
 rule build_metadata:
 	input:
 		grp1 = "processed/{annotation}_{kind}/txrevise_{kind}.grp_1.upstream.gff3",
-		grp2 = "processed/{annotation}_{kind}/txrevise_{kind}.grp_2.upstream.gff3"
+		grp2 = "processed/{annotation}_{kind}/txrevise_{kind}.grp_2.upstream.gff3",
+		gene_metadata = "processed/input/gene_metadata.tsv.gz"
 	output:
 		out = "processed/{annotation}_{kind}/txrevise_{kind}_phenotype_metadata.tsv.gz"
 	threads: 1
@@ -154,7 +155,7 @@ rule build_metadata:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript make_annotation_metadata.R --grp1 {input.grp1} --grp2 {input.grp2} --out {output.out}
+		Rscript make_annotation_metadata.R --grp1 {input.grp1} --grp2 {input.grp2} --out {output.out} --gene_metadata {input.gene_metadata}
 		"""
 
 #Iterate over groups and positions

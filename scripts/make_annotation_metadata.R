@@ -12,6 +12,8 @@ option_list <- list(
               help="Txrevise group 1 upstream gff file", metavar = "path"),
   make_option(c("--grp2"), type="character", default="",
               help="Txrevise group 2 upstream gff file", metavar = "path"),
+  make_option(c("--gene_metadata"), type="character", default="",
+              help="TSV metadata for genes", metavar = "path"),
   make_option(c("--out"), type="character", default="",
               help="Gzip filename to write output to", metavar = "path")
 )
@@ -19,8 +21,7 @@ opt <- parse_args(OptionParser(option_list=option_list))
 
 
 # Import gene metadata
-# https://zenodo.org/record/3366011
-gene_metadata = read.table("gene_counts_Ensembl_96_phenotype_metadata.tsv", stringsAsFactors = FALSE, header = TRUE) %>%
+gene_metadata = read.table(opt$gene_metadata, stringsAsFactors = FALSE, header = TRUE) %>%
   select(-phenotype_id, -phenotype_gc_content, -group_id, -quant_id, -phenotype_length)
 
 # Specify required phenotype metadata columns
