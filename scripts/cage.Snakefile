@@ -1,6 +1,7 @@
 # Requires files:
 # - txrevise.img Singularity image (always)
 # - processed/input/{annotation}.gtf.gz (always)
+# - processed/input/gene_metadata.tsv.gz (always)
 # - processed/input/promoters.tsv (cage)
 # - processed/input/genes.rds (optional) (cage)
 
@@ -47,7 +48,7 @@ rule build_cage_annotations:
 		promoters = "processed/input/promoters.tsv",
 		genes = "processed/input/genes.rds"
 	output:
-		annot = "processed/{annotation}_CAGE_{N}/new_transcripts_{N}.rds"
+		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds"
 	threads: 4
 	resources:
 		mem = 8000
@@ -61,10 +62,10 @@ rule build_cage_annotations:
 #Prepare CAGE annotations for integration
 rule prepare_cage:
 	input:
-		transcripts = "processed/{annotation}_CAGE_{N}/new_transcripts_{N}.rds",
+		transcripts = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds",
 		annot = "processed/{annotation}_regular/{annotation}_regular.txrevise_annotations.rds"
 	output:
-		cage_annots = "processed/{annotation}_CAGE_{N}/{annotation}_CAGE_{N}.txrevise_annotations.rds"
+		cage_annots = "processed/{annotation}_CAGE-{N}/{annotation}_CAGE-{N}.txrevise_annotations.rds"
 	threads: 1
 	resources:
 		mem = 6000
@@ -103,17 +104,17 @@ rule construct_events_regular:
 rule construct_events_cage:
 	input:
 		annot = "processed/{annotation}_regular/{annotation}_regular.txrevise_annotations.rds",
-		cage_annots = "processed/{annotation}_CAGE_{N}/{annotation}_CAGE_{N}.txrevise_annotations.rds"
+		cage_annots = "processed/{annotation}_CAGE-{N}/{annotation}_CAGE-{N}.txrevise_annotations.rds"
 	output:
-		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
-		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
-		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_1.contained.{batch}_{n_batches}.gff3",
-		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_2.contained.{batch}_{n_batches}.gff3",
-		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_1.downstream.{batch}_{n_batches}.gff3",
-		"processed/{annotation}_CAGE_{N}/batch/txrevise.grp_2.downstream.{batch}_{n_batches}.gff3"
+		"processed/{annotation}_CAGE-{N}/batch/txrevise.grp_1.upstream.{batch}_{n_batches}.gff3",
+		"processed/{annotation}_CAGE-{N}/batch/txrevise.grp_2.upstream.{batch}_{n_batches}.gff3",
+		"processed/{annotation}_CAGE-{N}/batch/txrevise.grp_1.contained.{batch}_{n_batches}.gff3",
+		"processed/{annotation}_CAGE-{N}/batch/txrevise.grp_2.contained.{batch}_{n_batches}.gff3",
+		"processed/{annotation}_CAGE-{N}/batch/txrevise.grp_1.downstream.{batch}_{n_batches}.gff3",
+		"processed/{annotation}_CAGE-{N}/batch/txrevise.grp_2.downstream.{batch}_{n_batches}.gff3"
 	params:
 		batch_str = "'{batch} {n_batches}'",
-		outdir = "processed/{annotation}_CAGE_{N}/batch"
+		outdir = "processed/{annotation}_CAGE-{N}/batch"
 	threads: 1
 	resources:
 		mem = 4000
@@ -176,7 +177,7 @@ rule make_one:
 #Create cage annotations for every N
 rule make_multiple_cage:
 	input:
-		N_out = expand("processed/{{annotation}}_CAGE_{N}/completed.txt", N = str(config['Ns']).split(' ')),
+		N_out = expand("processed/{{annotation}}_CAGE-{N}/completed.txt", N = str(config['Ns']).split(' ')),
 		regular_out = "processed/{annotation}_regular/completed.txt" # to get all regular gff files
 	output:
 		"processed/{annotation}_all_completed.txt"
