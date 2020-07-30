@@ -3,7 +3,6 @@
 # - processed/input/{annotation}.gtf.gz (always)
 # - processed/input/gene_metadata.tsv.gz (always)
 # - processed/input/promoters.tsv (cage)
-# - processed/input/genes.rds (optional) (cage)
 
 N_BATCHES = 200
 
@@ -45,8 +44,7 @@ rule build_cage_annotations:
 	input:
 		grp1 = "processed/{annotation}_regular/txrevise_regular.grp_1.upstream.gff3",
 		grp2 = "processed/{annotation}_regular/txrevise_regular.grp_2.upstream.gff3",
-		promoters = "processed/input/promoters.tsv",
-		genes = "processed/input/genes.rds"
+		promoters = "processed/input/promoters.tsv"
 	output:
 		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds"
 	threads: 4
@@ -56,7 +54,7 @@ rule build_cage_annotations:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N} --output {output.annot}
+		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --N {wildcards.N} --output {output.annot}
 		"""
 
 #Prepare CAGE annotations for integration
