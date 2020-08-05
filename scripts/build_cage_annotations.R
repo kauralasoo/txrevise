@@ -22,8 +22,10 @@ option_list <- list(
   make_option(c("--N"), type="integer", default=25,
               help="Integer specifying how far new exon starts need to be
               from exixting and new annotations", metavar = "integer"),
-  make_option(c("--output"), type="character", default="",
-              help="RDS file to where to write the new annotations", metavar = "path")
+  make_option(c("--output_transcripts"), type="character", default="",
+              help="RDS file to where to write the new annotations", metavar = "path"),
+  make_option(c("--output_genes"), type="character", default="",
+              help="RDS file to where to write the gene ID-s of the new annotations", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
 
@@ -223,9 +225,11 @@ Sys.time() - start_time
 print("Created")
 length(all_new_transcripts)
 print("transcripts over")
-length(unique(new_transcript_genes))
+new_transcript_genes = unique(new_transcript_genes)
+length(new_transcript_genes)
 print("genes using distance")
 PROMOTER_BUFFER_RANGE
 
 all_new_transcripts = GRangesList(all_new_transcripts)
-saveRDS(all_new_transcripts, opt$output)
+saveRDS(all_new_transcripts, opt$output_transcripts)
+saveRDS(new_transcript_genes, opt$output_genes)

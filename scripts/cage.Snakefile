@@ -49,6 +49,7 @@ rule build_cage_annotations:
 		genes = "processed/input/genes.rds"
 	output:
 		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds"
+		genes = "processed/{annotation}_CAGE-{N}/new_transcript_genes_{N}.rds"
 	threads: 4
 	resources:
 		mem = 8000
@@ -56,7 +57,7 @@ rule build_cage_annotations:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N} --output {output.annot}
+		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N} --output_transcripts {output.annot} --output_genes {output.genes}
 		"""
 
 #Prepare CAGE annotations for integration
