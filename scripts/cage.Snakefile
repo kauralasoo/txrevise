@@ -48,7 +48,7 @@ rule build_cage_annotations:
 		promoters = "processed/input/promoters.tsv",
 		genes = "processed/input/genes.rds"
 	output:
-		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds"
+		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds",
 		genes = "processed/{annotation}_CAGE-{N}/new_transcript_genes_{N}.rds"
 	threads: 4
 	resources:
