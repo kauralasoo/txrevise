@@ -3,7 +3,6 @@
 # - processed/input/{annotation}.gtf.gz (always)
 # - processed/input/gene_metadata.tsv.gz (always)
 # - processed/input/promoters.tsv (cage)
-# - processed/input/genes.rds (optional) (cage)
 
 N_BATCHES = 200
 
@@ -45,8 +44,7 @@ rule build_cage_annotations:
 	input:
 		grp1 = "processed/{annotation}_regular/txrevise_regular.grp_1.upstream.gff3",
 		grp2 = "processed/{annotation}_regular/txrevise_regular.grp_2.upstream.gff3",
-		promoters = "processed/input/promoters.tsv",
-		genes = "processed/input/genes.rds"
+		promoters = "processed/input/promoters.tsv"
 	output:
 		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds"
 		genes = "processed/{annotation}_CAGE-{N}/new_transcript_genes_{N}.rds"

@@ -16,9 +16,6 @@ option_list <- list(
               help="Txrevise group 2 upstream gff file", metavar = "path"),
   make_option(c("--promoters"), type="character", default="",
               help="TSV file with annotations of promoters", metavar = "path"),
-  make_option(c("--genes"), type="character", default=NULL,
-              help="Path to .rds file containing a vector of strings (ENSEMBL ID-s) that
-              specify the subset of genes to create annotations for (optional)", metavar = "path"),
   make_option(c("--N"), type="integer", default=25,
               help="Integer specifying how far new exon starts need to be
               from exixting and new annotations", metavar = "integer"),
@@ -36,18 +33,13 @@ EXON_BACK_RANGE = 1000
 
 promoter_annots = read_tsv(opt$promoters, col_types="ccciiicii")
 
-if (length(opt$genes) > 0) {
-  shared_genes = readRDS(opt$genes)
-  promoter_annots = promoter_annots %>% filter(gene_name %in% shared_genes)
-}
-
 upstream1 = GenomicFeatures::makeTxDbFromGFF(opt$grp1)
 upstream2 = GenomicFeatures::makeTxDbFromGFF(opt$grp2)
 exons_list1 = GenomicFeatures::exonsBy(upstream1, by = "tx", use.names = TRUE)
 exons_list2 = GenomicFeatures::exonsBy(upstream2, by = "tx", use.names = TRUE)
 
 
-#for every gene shared by cage and txrevise
+#for every gene
 
 all_new_transcripts = list()
 new_transcript_genes = c()
