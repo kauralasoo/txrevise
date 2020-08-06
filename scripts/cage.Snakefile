@@ -46,7 +46,7 @@ rule build_cage_annotations:
 		grp2 = "processed/{annotation}_regular/txrevise_regular.grp_2.upstream.gff3",
 		promoters = "processed/input/promoters.tsv"
 	output:
-		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds"
+		annot = "processed/{annotation}_CAGE-{N}/new_transcripts_{N}.rds",
 		genes = "processed/{annotation}_CAGE-{N}/new_transcript_genes_{N}.rds"
 	threads: 4
 	resources:
