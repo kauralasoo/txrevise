@@ -55,7 +55,7 @@ rule build_cage_annotations:
 		"./txrevise.img"
 	shell:
 		"""
-		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --genes {input.genes} --N {wildcards.N} --output_transcripts {output.annot} --output_genes {output.genes}
+		Rscript --verbose build_cage_annotations.R --grp1 {input.grp1} --grp2 {input.grp2} --promoters {input.promoters} --N {wildcards.N} --output_transcripts {output.annot} --output_genes {output.genes}
 		"""
 
 #Prepare CAGE annotations for integration
