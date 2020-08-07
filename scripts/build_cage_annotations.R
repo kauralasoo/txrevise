@@ -26,6 +26,11 @@ option_list <- list(
 )
 opt <- parse_args(OptionParser(option_list=option_list))
 
+#setwd("~/cage/analysis/txrevise/scripts")
+#opt = list(grp1 = "processed/Homo_sapiens.GRCh38.96_regular/txrevise_regular.grp_1.upstream.gff3",
+#           grp2 = "processed/Homo_sapiens.GRCh38.96_regular/txrevise_regular.grp_2.upstream.gff3",
+#           promoters = "processed/input/promoters.tsv",
+#           N = 25)
 
 PROMOTER_BUFFER_RANGE = opt$N
 EXON_START_BUFFER_RANGE = PROMOTER_BUFFER_RANGE
@@ -75,6 +80,8 @@ for (gene in unique(promoter_annots$gene_name)) {
     annot1 = exons_list1[names(exons_list1) %like% paste0(gene, ".grp_1.upstream")]
     annot2 = exons_list2[names(exons_list2) %like% paste0(gene, ".grp_2.upstream")]
     exons = c(annot1, annot2)
+
+    if (length(exons) < 1) {next}
 
     overlaps_with_exon_start = FALSE
     for (j in 1 : length(exons@unlistData)) {
