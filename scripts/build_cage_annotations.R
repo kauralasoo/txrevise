@@ -58,6 +58,10 @@ for (gene in unique(promoter_annots$gene_name)) {
   promoters = promoter_annots %>%
     filter(gene_name == gene)
 
+  annot1 = exons_list1[names(exons_list1) %like% paste0(gene, ".grp_1.upstream")]
+  annot2 = exons_list2[names(exons_list2) %like% paste0(gene, ".grp_2.upstream")]
+  exons = c(annot1, annot2)
+
   utilized_promoters = list() # have been used for creating transcripts
   for (i in 1 : dim(promoters)[1]) {
 
@@ -77,18 +81,15 @@ for (gene in unique(promoter_annots$gene_name)) {
 
     #for every exon in transcripts
 
-    annot1 = exons_list1[names(exons_list1) %like% paste0(gene, ".grp_1.upstream")]
-    annot2 = exons_list2[names(exons_list2) %like% paste0(gene, ".grp_2.upstream")]
-    exons = c(annot1, annot2)
-
     if (length(exons) < 1) {next}
+
+    a = peak_start - EXON_START_BUFFER_RANGE
+    b = peak_end + EXON_START_BUFFER_RANGE
 
     overlaps_with_exon_start = FALSE
     for (j in 1 : length(exons@unlistData)) {
 
       #if promoter +- EXON_START_BUFFER_RANGE does not overlap with an exon's start
-      a = peak_start - EXON_START_BUFFER_RANGE
-      b = peak_end + EXON_START_BUFFER_RANGE
 
       exon_start = exons@unlistData@ranges@start[j]
       if (strand == "-") {
