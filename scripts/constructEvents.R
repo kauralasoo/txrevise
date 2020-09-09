@@ -12,7 +12,7 @@ option_list <- list(
               help = "Fill alternative internal exons for promoter and 3'end events..", metavar = "path"),
   make_option(c("--cage"), type="character", default = NULL,
               help = "Path to the CAGE annotations file.", metavar = "path"),
-  make_option(c("--start_end_diff"), type="integer", default = 25,
+  make_option(c("--start_end_diff"), type="integer", default = 10,
               help = "Minimal difference (in basepairs) between the alternative promoters or 3'ends.", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
