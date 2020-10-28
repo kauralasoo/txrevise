@@ -1,15 +1,13 @@
-
 tests/data/cdss.rds
 tests/data/exons.rds
 tests/data/Homo_sapiens.GRCh37.74.TranscriptDb.db
 *.DS_Store
 tests/testthat/.Rhistory
-.Rhistory
+*.Rhistory
 .Rproj.user
 .Rbuildignore
 txrevise.Rproj
 scripts/.snakemake
 scripts/processed
-!scripts/processed/new_transcripts*
 scripts/SlurmOut
 *.img

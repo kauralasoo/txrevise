@@ -16,7 +16,7 @@ option_list <- list(
               help="Txrevise group 2 upstream gff file", metavar = "path"),
   make_option(c("--promoters"), type="character", default="",
               help="TSV file with annotations of promoters", metavar = "path"),
-  make_option(c("--N"), type="integer", default=25,
+  make_option(c("--N"), type="integer", default=20,
               help="Integer specifying how far new exon starts need to be
               from exixting and new annotations", metavar = "integer"),
   make_option(c("--output_transcripts"), type="character", default="",
@@ -25,12 +25,6 @@ option_list <- list(
               help="RDS file to where to write the gene ID-s of the new annotations", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
-
-#setwd("~/cage/analysis/txrevise/scripts")
-#opt = list(grp1 = "processed/Homo_sapiens.GRCh38.96_regular/txrevise_regular.grp_1.upstream.gff3",
-#           grp2 = "processed/Homo_sapiens.GRCh38.96_regular/txrevise_regular.grp_2.upstream.gff3",
-#           promoters = "processed/input/promoters.tsv",
-#           N = 25)
 
 PROMOTER_BUFFER_RANGE = opt$N
 EXON_START_BUFFER_RANGE = PROMOTER_BUFFER_RANGE

@@ -12,22 +12,11 @@ option_list <- list(
               help = "Fill alternative internal exons for promoter and 3'end events..", metavar = "path"),
   make_option(c("--cage"), type="character", default = NULL,
               help = "Path to the CAGE annotations file.", metavar = "path"),
-  make_option(c("--start_end_diff"), type="integer", default = 25,
+  make_option(c("--start_end_diff"), type="integer", default = 20,
               help = "Minimal difference (in basepairs) between the alternative promoters or 3'ends.", metavar = "path")
 )
 opt <- parse_args(OptionParser(option_list=option_list))
 print(opt)
-
-#Debugging
-if(FALSE){
-  opt = list(
-    annot = "scripts/processed/Homo_sapiens.GRCh38.96.txrevise_annotations.rds",
-    batch = "40 400",
-    out = "test_out",
-    fill = TRUE,
-    cage = "data/CAGE_promoter_annotations_25.rds"
-    )
-}
 
 annot_file = opt$annot
 batch_string = opt$batch

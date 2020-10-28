@@ -1,12 +1,12 @@
 # _txrevise_
-_txrevise_ R package provides utilites to pre-process Ensembl transcript annotations to quantify differences in transcript strucuture (alternative promoters, alternative splicing, alternative poly-adenylation) either between experimental conditions or genotypes (e.g. for transcript usage quntitative trait loci (tuQTL) mapping). 
+_txrevise_ R package provides utilites to pre-process Ensembl transcript annotations to quantify differences in transcript strucuture (alternative promoters, alternative splicing, alternative poly-adenylation) either between experimental conditions or genotypes (e.g. for transcript usage quntitative trait loci (tuQTL) mapping).
 
 If you use txrevise in your research, please cite the following paper: [Alasoo, Kaur, et al. "Genetic effects on promoter usage are highly context-specific and contribute to complex traits." Elife 8 (2019): e41673](https://doi.org/10.7554/eLife.41673)
 
 
 
 ## Constructing transcription events
-This section contains step-by-step instruction for how to construct transcriptional events based from Ensembl transcrtipt annotations. We have also written a [Snakefile](https://github.com/kauralasoo/txrevise/blob/master/scripts/Snakefile) for [snakemake](http://snakemake.readthedocs.io/en/stable/) that automates all of the steps and can be easily [executed in parallel](http://snakemake.readthedocs.io/en/latest/executable.html) on multiple cores or on a compute cluster. 
+This section contains step-by-step instruction for how to construct transcriptional events based from Ensembl transcrtipt annotations. We have also written a [Snakefile](https://github.com/kauralasoo/txrevise/blob/master/scripts/Snakefile) for [snakemake](http://snakemake.readthedocs.io/en/stable/) that automates all of the steps and can be easily [executed in parallel](http://snakemake.readthedocs.io/en/latest/executable.html) on multiple cores or on a compute cluster.
 
 ### Dependencies
 Make sure that you have R 3.5 installed together with the following packages:
@@ -40,8 +40,8 @@ Next, we need to convert the transcript annotations (in GTF format) to a binary 
 	Rscript scripts/prepareAnnotations.R --gtf Homo_sapiens.GRCh38.92.gtf.gz --tags Homo_sapiens.GRCh38.92.transcript_tags.txt --out Homo_sapiens.GRCh38.92.txrevise_annotations.rds
 
 ### Step 4: Construct transcription events
-Finally, we can use the `constructEvents.R` script to construct alternative transcription events. Since the implementation of the various algorithms in txrevise have not been optimised for efficiency, processing the full Ensembl GTF file can take several days. However, different genes can trivially processed in parallel. To simplify parallel execution, `constructEvents.R` has the `--batch` option that takes as an input two integers separated by a space. For example, '1 200' would mean that all genes are split into 200 batches and and only genes in the first are be processed. To process all genes, you simply need to iterate from '1 200' to '200 200'. 
-	
+Finally, we can use the `constructEvents.R` script to construct alternative transcription events. Since the implementation of the various algorithms in txrevise have not been optimised for efficiency, processing the full Ensembl GTF file can take several days. However, different genes can trivially processed in parallel. To simplify parallel execution, `constructEvents.R` has the `--batch` option that takes as an input two integers separated by a space. For example, '1 200' would mean that all genes are split into 200 batches and and only genes in the first are be processed. To process all genes, you simply need to iterate from '1 200' to '200 200'.
+
 	Rscript scripts/constructEvents.R --annot Homo_sapiens.GRCh38.92.txrevise_annotations.rds --batch '1 2000' --out txrevise_events  --fill TRUE
 
 ### Step 5: Merge output files
@@ -52,7 +52,7 @@ To be able to use these events with transcript quantification software such as [
 	cat txrevise_events/txrevise.grp_1.upstream.* | grep -v "^#" > txrevise.grp_1.upstream.gff3
 	cat txrevise_events/txrevise.grp_1.contained.* | grep -v "^#" > txrevise.grp_1.contained.gff3
 	cat txrevise_events/txrevise.grp_1.downstream.* | grep -v "^#" > txrevise.grp_1.downstream.gff3
-	
+
 	cat txrevise_events/txrevise.grp_2.upstream.* | grep -v "^#" > txrevise.grp_2.upstream.gff3
 	cat txrevise_events/txrevise.grp_2.contained.* | grep -v "^#" > txrevise.grp_2.contained.gff3
 	cat txrevise_events/txrevise.grp_2.downstream.* | grep -v "^#" > txrevise.grp_2.downstream.gff3
@@ -78,7 +78,7 @@ We have also constructed an alternative set of "raw" annotation files where the 
 Many transcript expression quantification tools (e.g. Salmon or kallisto) do not directly work with transcript annotations in GFF3 format and require the transcript sequences in FASTA format instead. The simplest way to convert GFF3 annotations into transcript (or event) sequences is to use the `gffread` tool from the [cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) package:
 
 	gffread -w <output.fa> -g <reference_genome.fa> <input.gff3>
-	
+
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbLTEzMzc1MDcwODUsNTkyNTM4MTM4LC04Mz
 E3NTU5OTQsLTg2MzgwMzU3MywxNTkyMjg2MTUsMTA3NzMwMzk0
