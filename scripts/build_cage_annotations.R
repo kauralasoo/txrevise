@@ -1,5 +1,3 @@
-# TODO: use profiler
-
 library("data.table") # %like%
 library("rtracklayer")
 library("GenomicRanges")
@@ -170,49 +168,6 @@ for (gene in unique(promoter_annots$gene_name)) {
 
     utilized_promoters = c(utilized_promoters, list(promoter))
   }
-
-  # visualization, requires wiggleplotr
-  '
-  spec = promoters
-
-  spec_wide = spec %>%
-    mutate(peak_start = peak_start - 150, peak_end = peak_end + 150)
-
-  rangeslists = c()
-  for (i in 1:dim(spec)[1]) {
-    row = spec[i,]
-    rangeslists = c(rangeslists,
-                    GRanges(seqnames=2,
-                            ranges=IRanges(as.numeric(spec[i,4]), as.numeric(spec[i,5])),
-                            strand=as.character(spec[i,6])))
-  }
-  names(rangeslists) = spec$tss_id
-
-  rangeslists_wide = c()
-  for (i in 1:dim(spec_wide)[1]) {
-    row = spec_wide[i,]
-    rangeslists_wide = c(rangeslists_wide,
-                         GRanges(seqnames=2,
-                                 ranges=IRanges(as.numeric(spec_wide[i,4]), as.numeric(spec_wide[i,5])),
-                                 strand=as.character(spec_wide[i,6])))
-  }
-  names(rangeslists_wide) = spec_wide$tss_id
-
-
-  filter_start = min(spec$peak_start) - 100000
-  filter_end = max(spec$peak_end) + 100000
-  region_filter = GRanges(seqnames=2, IRanges(start=filter_start, end=filter_end))
-
-  filtered_exons = lapply(exons, pintersect, region_filter, drop.nohit.ranges=TRUE)
-  filtered_exons = filtered_exons[lapply(filtered_exons, length) > 0]
-  #filtered_exons = pintersect(GRanges(seqnames=2, transcript), region_filter, drop.nohit.ranges=TRUE)
-
-  all_trs = c(filtered_exons, rangeslists, gene_new_transcripts)
-  expanded_trs = c(filtered_exons, rangeslists_wide, gene_new_transcripts)
-
-
-  print(plotTranscripts(exons=expanded_trs, cdss=all_trs))
-  '
 }
 
 Sys.time() - start_time
