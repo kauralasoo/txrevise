@@ -42,7 +42,7 @@ all_new_transcripts = list()
 new_transcript_genes = c()
 
 start_time = Sys.time()
-for (gene in unique(promoter_annots$gene_name)) {
+for (gene in unique(promoter_annots$gene_name)[1:10]) {
   gene_new_transcripts = list()
 
   #for every promoter belonging to the gene
@@ -53,6 +53,8 @@ for (gene in unique(promoter_annots$gene_name)) {
   annot1 = exons_list1[names(exons_list1) %like% paste0(gene, ".grp_1.upstream")]
   annot2 = exons_list2[names(exons_list2) %like% paste0(gene, ".grp_2.upstream")]
   exons = c(annot1, annot2)
+
+  new_transcript_id = 0
 
   utilized_promoters = list() # have been used for creating transcripts
   for (i in 1 : dim(promoters)[1]) {
@@ -148,8 +150,11 @@ for (gene in unique(promoter_annots$gene_name)) {
         exon_rank = ns
         if (strand == "-") {exon_rank = rev(exon_rank)}
 
+        new_transcript_id = new_transcript_id + 1
+        exon_names = paste0(gene, ".new.upstream.", new_transcript_id, ":", ns)
+
         new_transcript = GRanges(seqnames=chr, ranges=new_transcript, strand=strand,
-                                 exon_id=ns, exon_name=ns, exon_rank=exon_rank) # Parent, gene_id ?
+                                 exon_id=ns, exon_name=exon_names, exon_rank=exon_rank)
         new_is_duplicate = FALSE
         if (length(gene_new_transcripts) > 0) {
           new_is_duplicate = any(sapply(new_transcript %in% gene_new_transcripts, all))
