@@ -42,7 +42,7 @@ all_new_transcripts = list()
 new_transcript_genes = c()
 
 start_time = Sys.time()
-for (gene in unique(promoter_annots$gene_name)[1:10]) {
+for (gene in unique(promoter_annots$gene_name)) {
   gene_new_transcripts = list()
 
   #for every promoter belonging to the gene
