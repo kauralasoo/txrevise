@@ -85,9 +85,6 @@ To be able to use these events with transcript quantification software such as [
 #### Step 6: Quantify event expression
 The GFF3 files constructed by _txrevise_ can be used with any transcript quantification algorithm (e.g. [Salmon](http://salmon.readthedocs.io/en/latest/) or [kallisto](https://pachterlab.github.io/kallisto/)). **Importantly, since the promoter, internal exon and 3' end events constructed by txrevise share some of the same exons, they should always quantified independently**. For example, if you have six GFF3 files from txrevise (txrevise.grp_1.upstream.gff3, txrevise.grp_1.contained.gff3, txrevise.grp_1.downstream.gff3, txrevise.grp_2.upstream.gff3, txrevise.grp_2.contained.gff3, txrevise.grp_2.downstream.gff3), you should also run the quantification algorithm six times with each of the GFF3 file independently.
 
-#### Optional: generate additional alternative promoter events using promoter annotations
-TODO
-
 ## Extracting event sequences for quantification
 Many transcript expression quantification tools (e.g. Salmon or kallisto) do not directly work with transcript annotations in GFF3 format and require the transcript sequences in FASTA format instead. The simplest way to convert GFF3 annotations into transcript (or event) sequences is to use the `gffread` tool from the [cufflinks](http://cole-trapnell-lab.github.io/cufflinks/) package:
 
