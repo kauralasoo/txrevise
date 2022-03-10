@@ -20,7 +20,7 @@ mem = str(job_properties.get('resources',{}).get('mem'))
 output_file = os.path.join("SlurmOut", job_name + '.%j.txt')
 
 #Construct a submission script
-command = "".join(["sbatch -p main -J ", job_name, " -t 24:00:00 -N 1 --ntasks-per-node=1 --cpus-per-task=",
+command = "".join(["sbatch -p amd -J ", job_name, " -t 24:00:00 -N 1 --ntasks-per-node=1 --cpus-per-task=",
 	str(threads), " --mem ", mem, " -o ", output_file, " -e ", output_file])
 
 #Run the script
